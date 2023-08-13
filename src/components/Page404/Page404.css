@@ -1,0 +1,47 @@
+.page404 {
+  background-color: rgba(255, 255, 255, 1);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.page404__title {
+  padding: 0;
+  margin: 35vh 0 5px 0;
+  font-size: 140px;
+  font-weight: 400;
+  line-height: 169px;
+}
+
+.page404__subtitle {
+  padding: 0;
+  margin: 0 0 184px 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.page404__link {
+  margin: 0;
+  padding: 0;
+}
+
+@media screen and (max-width: 770px) {
+  .page404__title {
+    margin-top: 40vh;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .page404__title {
+    margin-top: 42vh;
+    margin-bottom: 10px;
+    font-size: 80px;
+    line-height: 97px;
+  }
+  .page404__subtitle {
+    font-size: 12px;
+    line-height: 15px;
+    margin-bottom: 284px;
+  }
+}

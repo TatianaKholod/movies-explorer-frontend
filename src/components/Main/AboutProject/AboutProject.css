@@ -1,0 +1,123 @@
+.about-project {
+  box-sizing: border-box;
+  padding-top: 10px;
+}
+
+.about-project__info-container {
+  width: 100%;
+  display: flex;
+  gap: 40px;
+}
+
+.about-project__info {
+  padding: 70px 0 110px 0;
+}
+
+.about-project__info-title {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+  margin: 0 0 26px 0;
+  padding: 0;
+}
+
+.about-project__info-text {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.about-project__graph-container {
+  width: 100%;
+  display: flex;
+}
+
+.about-project__graph-value {
+  height: 36px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(242, 242, 242, 1);
+}
+
+.about-project__graph_part_1 {
+  width: 20%;
+}
+
+.about-project__graph_part_4 {
+  width: 80%;
+}
+
+.about-project__graph-value_active_on {
+  background-color: rgba(52, 86, 243, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.about-project__graph-title {
+  color: rgba(160, 160, 160, 1);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  margin: 14px 0 0 0;
+}
+
+@media screen and (max-width: 770px) {
+  .about-project__info {
+    padding-top: 70px;
+    padding-bottom: 93px;
+  }
+  .about-project {
+    padding-top: 0;
+    margin-bottom: 90px;
+  }
+  .about-project__info-text {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .about-project__info-title {
+    margin-bottom: 22px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .about-project {
+    margin-bottom: 70px;
+  }
+  .about-project__info-container {
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 60px;
+  }
+  .about-project__info-title {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 16px;
+  }
+  .about-project__info-text {
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .about-project__info {
+    padding: 59px 0 0 0;
+  }
+  .about-project__graph-value {
+    height: 35px;
+    font-size: 11px;
+    line-height: auto;
+  }
+  .about-project__graph_part_1 {
+    min-width: 100px;
+  }
+  .about-project__graph-title {
+    font-size: 11px;
+    line-height: auto;
+    margin-top: 8px;
+  }
+}
