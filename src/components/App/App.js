@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from '../Login/Login';
 import Register from '../Register/Register';
 import Main from '../Main/Main';
@@ -6,6 +6,7 @@ import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile';
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import Page404 from '../Page404/Page404';
 
 import './App.css';
@@ -21,8 +22,9 @@ const handleSubmitLogin = (email, pwd) => {
 };
 
 function App() {
+  const location = useLocation();
   return (
-    <div className='App'>
+    <div className={`App ${location.pathname === '/' ? 'App_gray' :''}`}>
       <Header />
       <Routes>
         <Route
@@ -44,6 +46,7 @@ function App() {
         />
         <Route path='*' element={<Page404 />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

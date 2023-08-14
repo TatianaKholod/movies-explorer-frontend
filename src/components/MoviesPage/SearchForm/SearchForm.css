@@ -144,6 +144,7 @@
   .search-form__container {
     height: 100%;
     flex-direction: column;
+    /* по макету серый, а по виду белый*/
     background-color: rgba(250, 250, 250, 1);
     box-shadow: none;
     justify-content: flex-end;

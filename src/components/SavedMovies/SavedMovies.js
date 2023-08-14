@@ -33,9 +33,9 @@ function SavedMovies() {
   }, []);
 
   return (
-    <div>
+    <main>
       <MoviesPage isLoading={isLoading} moviesCardArr={saveMoviesCardArr} />
-    </div>
+    </main>
   );
 }
 

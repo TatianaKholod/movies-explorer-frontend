@@ -5,43 +5,41 @@ import './Header.css';
 
 function Header() {
   return (
-    <>
-      <Routes>
-        {['/movies', '/saved-movies', '/profile'].map((routPath, key) => (
-          <Route
-            key={key}
-            path={routPath}
-            element={
-              <header className='header'>
-                <Link className='link' to='/'>
-                  <img alt='Логотип проекта - movies-explorer' src={logo} />
-                </Link>
-                <HeaderNav />
-              </header>
-            }
-          />
-        ))}
+    <Routes>
+      {['/movies', '/saved-movies', '/profile'].map((routPath, key) => (
         <Route
-          path='/'
+          key={key}
+          path={routPath}
           element={
-            <header className='header section-grey'>
+            <header className='header'>
               <Link className='link' to='/'>
                 <img alt='Логотип проекта - movies-explorer' src={logo} />
               </Link>
-              <div className='header__container-auth'>
-                <Link className='header__link link' to='/signup'>
-                  Регистрация
-                </Link>
-                <Link className='header__button link button' to='/signin'>
-                  Войти
-                </Link>
-              </div>
+              <HeaderNav />
             </header>
           }
         />
-        <Route path='*' element={null} />
-      </Routes>
-    </>
+      ))}
+      <Route
+        path='/'
+        element={
+          <header className='header section-grey'>
+            <Link className='link' to='/'>
+              <img alt='Логотип проекта - movies-explorer' src={logo} />
+            </Link>
+            <div className='header__container-auth'>
+              <Link className='header__link link' to='/signup'>
+                Регистрация
+              </Link>
+              <Link className='header__button link button' to='/signin'>
+                Войти
+              </Link>
+            </div>
+          </header>
+        }
+      />
+      <Route path='*' element={null} />
+    </Routes>
   );
 }
 

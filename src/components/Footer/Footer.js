@@ -1,3 +1,4 @@
+import { Route, Routes } from 'react-router-dom';
 import './Footer.css';
 
 const footerLinkArr = [
@@ -6,28 +7,43 @@ const footerLinkArr = [
 ];
 function Footer() {
   return (
-    <footer className='footer'>
-      <p className='footer__title'>
-        Учебный проект Яндекс.Практикум х BeatFilm.
-      </p>
-      <div className='footer__container'>
-        <p className='footer__year'>&copy; {new Date().getFullYear()}</p>
-        <ul className='footer__nav'>
-          {footerLinkArr.map((i, key) => (
-            <li key={key}>
-              <a
-                className='footer__link link'
-                href={i.link}
-                target='blank'
-                rel='noreferrer'
-              >
-                {i.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </footer>
+    <Routes>
+      {['/', '/movies', '/saved-movies', '/profile'].map((routPath, key) => (
+        <Route
+          key={key}
+          path={routPath}
+          element={
+            <footer
+              className={`footer ${routPath === '/' ? 'footer_main' : ''}`}
+            >
+              <p className='footer__title'>
+                Учебный проект Яндекс.Практикум х BeatFilm.
+              </p>
+              <div className='footer__container'>
+                <p className='footer__year'>
+                  &copy; {new Date().getFullYear()}
+                </p>
+                <ul className='footer__nav'>
+                  {footerLinkArr.map((i, key) => (
+                    <li key={key}>
+                      <a
+                        className='footer__link link'
+                        href={i.link}
+                        target='blank'
+                        rel='noreferrer'
+                      >
+                        {i.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </footer>
+          }
+        />
+      ))}
+      <Route path='*' element={null} />
+    </Routes>
   );
 }
 

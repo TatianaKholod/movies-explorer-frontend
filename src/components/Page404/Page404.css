@@ -22,13 +22,16 @@
 }
 
 .page404__link {
-  margin: 0;
+  margin: 0 0 60px 0;
   padding: 0;
 }
 
 @media screen and (max-width: 770px) {
   .page404__title {
     margin-top: 40vh;
+  }
+  .page404__link {
+    margin-bottom: 222px;
   }
 }
 
@@ -43,5 +46,8 @@
     font-size: 12px;
     line-height: 15px;
     margin-bottom: 284px;
+  }
+  .page404__link {
+    margin-bottom: 30px;
   }
 }

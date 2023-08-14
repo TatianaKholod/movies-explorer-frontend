@@ -7,7 +7,7 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
   const refGrid = createRef();
 
   // подсчет реально отображенных в контейнере карточек без скрытых
-  const getcountMaxDisplayed = (gridElem) => {
+  const getCountDisplayedCards = (gridElem) => {
     if (!gridElem) return 0;
 
     const maxTop =
@@ -18,10 +18,20 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
     );
   };
 
-  const [countMaxDisplayed, setCcountMaxDisplayed] = useState(0);
+  const [countDisplayedCards, setCountDisplayedCards] = useState(0);
+  //const [currentCards, setCurrentCards] = useState([]);
+  
+  //let lastDisplayedCardIndex = 0; //TODO
+
   useEffect(() => {
-    setCcountMaxDisplayed(getcountMaxDisplayed(refGrid.current));
+    setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
+
+  const handleOnClikMore = () => {
+  /*  lastDisplayedCardIndex = lastDisplayedCardIndex + countDisplayedCards;
+    lastDisplayedCardIndex = (lastDisplayedCardIndex >= moviesCardArr.length)? 0 : lastDisplayedCardIndex;
+     setCurrentCards(moviesCardArr.slice(lastDisplayedCardIndex, lastDisplayedCardIndex+16)); */
+  };
 
   return (
     <section className='card-list movies-main-section' aria-label='Галерея'>
@@ -39,11 +49,12 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
           <div className='card-list__button-container'>
             <button
               className={`card-list__button link ${
-                countMaxDisplayed < moviesCardArr.length
+                countDisplayedCards < moviesCardArr.length
                   ? 'card-list__button_on'
                   : ''
               }`}
               type='button'
+              onClick={handleOnClikMore}
             >
               Ещё
             </button>

@@ -34,9 +34,9 @@ function Movies() {
   }, []);
 
   return (
-    <div>
+    <main>
       <MoviesPage isLoading={isLoading} moviesCardArr={moviesCardArr} />
-    </div>
+    </main>
   );
 }
 

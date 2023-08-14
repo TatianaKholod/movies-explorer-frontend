@@ -3,20 +3,18 @@ import NavTab from './NavTab/NavTab';
 import AboutProject from './AboutProject/AboutProject';
 import Techs from './Techs/Techs';
 import Portfolio from './Portfolio/Portfolio';
-import Footer from '../Footer/Footer';
 
 import './Main.css';
 
 function Main() {
   return (
-    <div>
+    <main>
       <Promo />
       <NavTab />
       <AboutProject />
       <Techs />
       <Portfolio />
-      <Footer />
-    </div>
+    </main>
   );
 }
 
