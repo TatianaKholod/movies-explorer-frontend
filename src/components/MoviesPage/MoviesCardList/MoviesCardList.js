@@ -18,19 +18,26 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
     );
   };
 
+  //  Установим масив карточек для отображения
   const [countDisplayedCards, setCountDisplayedCards] = useState(0);
-  //const [currentCards, setCurrentCards] = useState([]);
+  const [currentCardIndex, setCcurrentCardIndex] = useState(0);
   
-  //let lastDisplayedCardIndex = 0; //TODO
+  const firstDisplayedCardIndex = currentCardIndex;
+  // Вырежем максимально возможную часть
+  const lastDisplayedCardIndex = firstDisplayedCardIndex + 16;
+  const currentCards = moviesCardArr.slice(firstDisplayedCardIndex, lastDisplayedCardIndex);
+  //console.log(currentCards);
 
   useEffect(() => {
     setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
 
   const handleOnClikMore = () => {
-  /*  lastDisplayedCardIndex = lastDisplayedCardIndex + countDisplayedCards;
-    lastDisplayedCardIndex = (lastDisplayedCardIndex >= moviesCardArr.length)? 0 : lastDisplayedCardIndex;
-     setCurrentCards(moviesCardArr.slice(lastDisplayedCardIndex, lastDisplayedCardIndex+16)); */
+    // определим реальную часть
+    const lastIndex = firstDisplayedCardIndex + countDisplayedCards;
+    //эта песня хороша - начинай сначала
+    const currentCardIndexValue = (lastIndex >= moviesCardArr.length)? 0 : lastIndex;
+    setCcurrentCardIndex(currentCardIndexValue);
   };
 
   return (
@@ -41,7 +48,7 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
         <>
           <div className='card-list__container'>
             <ul className='card-list__list movies-common-section' ref={refGrid}>
-              {moviesCardArr.map((card, key) => (
+              {currentCards.map((card, key) => (
                 <MoviesCard key={key} card={card} />
               ))}
             </ul>
