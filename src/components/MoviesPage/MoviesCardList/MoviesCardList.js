@@ -9,7 +9,12 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
   // подсчет реально отображенных в контейнере карточек без скрытых
   const getCountDisplayedCards = (gridElem) => {
     if (!gridElem) return 0;
-
+    // так можно получить количество строк и столбцов грида
+    /*const styles = window.getComputedStyle(gridElem); // получаем все стили элемента
+    const width = styles.getPropertyValue('grid-template-rows');
+    console.log(width);*/
+    // так можно установить высоту 
+    //gridElem.parentElement.style.setProperty('max-height', '300px');
     const maxTop =
       gridElem.parentElement.offsetTop + gridElem.parentElement.offsetHeight;
     return Array.from(gridElem.children).reduce(
@@ -18,26 +23,15 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
     );
   };
 
-  //  Установим масив карточек для отображения
+  //  Для определения количества реально отображенных карточек
   const [countDisplayedCards, setCountDisplayedCards] = useState(0);
-  const [currentCardIndex, setCcurrentCardIndex] = useState(0);
-  
-  const firstDisplayedCardIndex = currentCardIndex;
-  // Вырежем максимально возможную часть
-  const lastDisplayedCardIndex = firstDisplayedCardIndex + 16;
-  const currentCards = moviesCardArr.slice(firstDisplayedCardIndex, lastDisplayedCardIndex);
-  //console.log(currentCards);
-
-  useEffect(() => {
-    setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
+    
+   useEffect(() => {
+     setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
 
   const handleOnClikMore = () => {
-    // определим реальную часть
-    const lastIndex = firstDisplayedCardIndex + countDisplayedCards;
-    //эта песня хороша - начинай сначала
-    const currentCardIndexValue = (lastIndex >= moviesCardArr.length)? 0 : lastIndex;
-    setCcurrentCardIndex(currentCardIndexValue);
+
   };
 
   return (
@@ -48,7 +42,7 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
         <>
           <div className='card-list__container'>
             <ul className='card-list__list movies-common-section' ref={refGrid}>
-              {currentCards.map((card, key) => (
+              {moviesCardArr.map((card, key) => (
                 <MoviesCard key={key} card={card} />
               ))}
             </ul>

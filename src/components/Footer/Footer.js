@@ -8,7 +8,7 @@ const footerLinkArr = [
 function Footer() {
   return (
     <Routes>
-      {['/', '/movies', '/saved-movies', '/profile'].map((routPath, key) => (
+      {['/', '/movies', '/saved-movies'].map((routPath, key) => (
         <Route
           key={key}
           path={routPath}
