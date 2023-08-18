@@ -3,7 +3,7 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
 
-function MoviesCardList({ moviesCardArr, isLoading }) {
+function MoviesCardList({ moviesCardArr, isLoading, handleOnClickLike, messageStr }) {
   const refGrid = createRef();
 
   // подсчет реально отображенных в контейнере карточек без скрытых
@@ -77,11 +77,13 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
       ) : (
         <>
           <div className='card-list__container'>
+            { (messageStr) ? <p className='card-list__message'>{messageStr}</p> :
             <ul className='card-list__list movies-common-section' ref={refGrid}>
               {moviesCardArr.map((card, key) => (
-                <MoviesCard key={key} card={card} />
+                <MoviesCard key={key} card={card} handleOnClickLike={handleOnClickLike} />
               ))}
             </ul>
+}
           </div>
           <div className='card-list__button-container'>
             <button

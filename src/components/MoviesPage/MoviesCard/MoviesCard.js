@@ -1,15 +1,28 @@
 import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
 
-function MoviesCard({ card }) {
+
+function MoviesCard({ card, handleOnClickLike }) {
   const location = useLocation();
+  const imgUrl = (card.image.url) ? `https://api.nomoreparties.co${card.image.url}` : card.image;
+  const hours = Math.trunc(card.duration / 60);
+  const duration = `${hours > 0 ? hours + 'ч' : ''}${card.duration % 60}м`;
+
+  const handleOnClickCard = (e) => {
+    if (e.target.type === 'button') return;
+    window.open(card.trailerLink);
+  };
+
+  const handleOnClickLikeCard = () =>{
+    handleOnClickLike({...card,'image':imgUrl});
+  }
   return (
-    <li className='movies-card'>
-      <img className='movies-card__image' src={card.image} alt={card.nameRU} />
+    <li className='movies-card' onClick={handleOnClickCard}>
+      <img className='movies-card__image' src={imgUrl} alt={card.nameRU} />
       <div className='movies-card__name'>
         <div className='movies-card__text'>
           <h2 className='movies-card__text-name'>{card.nameRU}</h2>
-          <p className='movies-card__duration'>{card.duration}</p>
+          <p className='movies-card__duration'>{duration}</p>
         </div>
         {location.pathname !== '/movies' ? (
           <button
@@ -23,12 +36,13 @@ function MoviesCard({ card }) {
         ) : (
           <button
             name='like-toggle'
-            //TODO замени true на признак карточки сохраненной
+            //TODO замени false на признак карточки сохраненной
             className={`movies-card__like-toggle link ${
-              true ? 'movies-card__like-toggle_on' : ''
+              false ? 'movies-card__like-toggle_on' : ''
             }`}
             aria-label='Нравится'
             type='button'
+            onClick={handleOnClickLikeCard}
           ></button>
         )}
       </div>

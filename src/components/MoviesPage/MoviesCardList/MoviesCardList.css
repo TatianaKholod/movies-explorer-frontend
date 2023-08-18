@@ -14,7 +14,15 @@
   box-sizing: border-box;
   display: flex;
 }
-
+.card-list__message{
+  height: 100%;
+  width: 70%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  margin: 30px auto 0 auto; 
+}
 .card-list__list {
   width: 100%;
 
