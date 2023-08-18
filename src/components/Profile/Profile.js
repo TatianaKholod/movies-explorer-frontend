@@ -28,12 +28,13 @@ function Profile({ user }) {
     }
   };
 
-  function handleChangeName(e) {
+  const handleChangeName = (e) => {
     setName(e.target.value);
   }
-  function handleChangeEmail(e) {
+  const handleChangeEmail = (e) => {
     setEmail(e.target.value);
   }
+  
   return (
     <main className='profile'>
       <h2 className='profile__title'>Привет, {user.name}!</h2>

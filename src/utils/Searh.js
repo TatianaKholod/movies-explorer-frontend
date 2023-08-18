@@ -1,3 +1,4 @@
+// Переделай алгоритм поиска на регулярные выражения, чтобы можно было искать любую последовательность введенных слов
 const doFilterData = (arr, word, durationTogl) => {
   const keyWord = word.toLowerCase();
   return arr.filter((movie) =>

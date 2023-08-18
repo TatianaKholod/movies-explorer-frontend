@@ -3,7 +3,12 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
 
-function MoviesCardList({ moviesCardArr, isLoading, handleOnClickLike, messageStr }) {
+function MoviesCardList({
+  moviesCardArr,
+  isLoading,
+  handleOnClickLike,
+  messageStr,
+}) {
   const refGrid = createRef();
 
   // подсчет реально отображенных в контейнере карточек без скрытых
@@ -23,11 +28,11 @@ function MoviesCardList({ moviesCardArr, isLoading, handleOnClickLike, messageSt
   useEffect(() => {
     setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
-  
+
   // Для определения кол-ва колонок и высоты элементов грида
   const determinePropertiesGrid = () => {
     // получаем все стили элемента
-    const stylesGrid = window.getComputedStyle(refGrid.current); 
+    const stylesGrid = window.getComputedStyle(refGrid.current);
     const columns = stylesGrid.getPropertyValue('grid-template-columns');
     const rows = stylesGrid.getPropertyValue('grid-template-rows');
     const gap = stylesGrid.getPropertyValue('row-gap');
@@ -40,26 +45,29 @@ function MoviesCardList({ moviesCardArr, isLoading, handleOnClickLike, messageSt
   // Для определения высоты контейнера
   const determineHeightConteiner = (countColumns, heightCard, countCards) => {
     // 70 это padding По хорошему нужно брать из свойств TODO
-    return (+Math.ceil(countCards / countColumns) * heightCard + +70)  + 'px';
+    return +Math.ceil(countCards / countColumns) * heightCard + +70 + 'px';
   };
 
-  const updateHeightContainer = () =>{
+  const updateHeightContainer = () => {
     const { countColumns, heightCard } = determinePropertiesGrid();
-    setTimeout(refGrid.current.parentElement.style.setProperty(
-      'max-height',
-      determineHeightConteiner(countColumns, heightCard, countDisplayedCards)
-    ), 500);
-  }
+    setTimeout(
+      refGrid.current.parentElement.style.setProperty(
+        'max-height',
+        determineHeightConteiner(countColumns, heightCard, countDisplayedCards)
+      ),
+      500
+    );
+  };
 
   // Для изменения размеров контейнера при resize
   useEffect(() => {
-    window.addEventListener("resize", updateHeightContainer);
-    return () => window.removeEventListener("resize", updateHeightContainer);
+    window.addEventListener('resize', updateHeightContainer);
+    return () => window.removeEventListener('resize', updateHeightContainer);
   });
 
   // Обработчик нажатия кнопки Еще
   const handleOnClikMore = () => {
-     const { countColumns, heightCard } = determinePropertiesGrid();
+    const { countColumns, heightCard } = determinePropertiesGrid();
     const newCountCards =
       +(countColumns > 1 ? countColumns : 2) + countDisplayedCards;
     // приращение в гриде в одну колонку = 2
@@ -77,18 +85,28 @@ function MoviesCardList({ moviesCardArr, isLoading, handleOnClickLike, messageSt
       ) : (
         <>
           <div className='card-list__container'>
-            { (messageStr) ? <p className='card-list__message'>{messageStr}</p> :
-            <ul className='card-list__list movies-common-section' ref={refGrid}>
-              {moviesCardArr.map((card, key) => (
-                <MoviesCard key={key} card={card} handleOnClickLike={handleOnClickLike} />
-              ))}
-            </ul>
-}
+            {messageStr ? (
+              <p className='card-list__message'>{messageStr}</p>
+            ) : (
+              <ul
+                className='card-list__list movies-common-section'
+                ref={refGrid}
+              >
+                {moviesCardArr.map((card, key) => (
+                  <MoviesCard
+                    key={key}
+                    card={card}
+                    handleOnClickLike={handleOnClickLike}
+                  />
+                ))}
+              </ul>
+            )}
           </div>
           <div className='card-list__button-container'>
             <button
               className={`card-list__button link ${
-                countDisplayedCards < moviesCardArr.length
+                countDisplayedCards < moviesCardArr.length &&
+                countDisplayedCards !== 0
                   ? 'card-list__button_on'
                   : ''
               }`}

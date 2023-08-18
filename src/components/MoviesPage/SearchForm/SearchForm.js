@@ -1,25 +1,35 @@
-import { createRef, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import './SearchForm.css';
 
 function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
-  const refInputSearh = createRef();
-  const refCheckDuration = createRef();
+  const location = useLocation();
 
+  const [keyWord, setKeyWord] = useState('');
+  const [durationTogl, setDurationTogl] = useState(false);
+  const [searhPlaceholder, setSearhPlaceholder] = useState('Фильм');
+
+  const handleChangeKeyWord = (e) =>{
+    setKeyWord(e.target.value);
+  }
   const handleClicSearchBtnForm = (e) => {
     e.preventDefault();
-    refInputSearh.current.value === ''
-      ? (refInputSearh.current.placeholder = 'Нужно ввести ключевое слово')
-      : handleClicSearchBtn(refInputSearh.current.value, refCheckDuration.current.checked);
+    (keyWord === '')&&(location.pathname === '/movies')
+      ? (setSearhPlaceholder('Нужно ввести ключевое слово'))
+      : handleClicSearchBtn(keyWord, durationTogl);
   };
   const handleClicCheckDurationForm = (e) => {
+    setDurationTogl(e.target.checked);
     // слово передадим для ситуации, когда отображены сохраненные данные и нужен новый фильтр
-    handleClicCheckDuration(e.target.checked, refInputSearh.current.value);
+    handleClicCheckDuration(e.target.checked, keyWord);
   };
   useEffect(() => {
+    // если есть данные в localStorage покажем их только на странице фильмов
+    if (location.pathname !== '/movies') return;
     const check = (localStorage.getItem('durationTogl')==='false')? false: true;
-    refInputSearh.current.value = localStorage.getItem('searchWord');
-    refCheckDuration.current.checked = check;
-  }, []);
+    setKeyWord(localStorage.getItem('searchWord'));
+    setDurationTogl(check);
+  }, [location.pathname]);
 
   return (
     <form className='search-form movies-main-section'>
@@ -29,8 +39,9 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
           <input
             className='search-form__search-input'
             type='search'
-            placeholder='Фильм'
-            ref={refInputSearh}
+            placeholder={searhPlaceholder}
+            value={keyWord}
+            onChange={handleChangeKeyWord}
           ></input>
           <button
             className='search-form__search-button link'
@@ -45,9 +56,8 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
               className='search-form__search-checkbox'
               type='checkbox'
               id='search-checkbox'
-              defaultChecked={false}
               onChange={handleClicCheckDurationForm}
-              ref={refCheckDuration}
+              checked={durationTogl}
             ></input>
             <span className='search-form__search-checkbox-switch'>
               Короткометражки

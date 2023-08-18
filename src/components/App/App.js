@@ -41,7 +41,7 @@ function App() {
   };
 
   const handleOnClickLike = (movie) => {
-    //if (!loggedIn) return;
+    //if (!loggedIn) return; //TODO
     const savedMovie = {
       country: movie.country,
       director: movie.director,
@@ -60,22 +60,36 @@ function App() {
     });
   };
 
-  // данные забираем здесь, чтобы при смене роутов не запрашивать еще раз
+  // данные забираем здесь, чтобы при смене роутов не запрашивать еще раз и проставить лайки
   const getInitialData = () => {
     if (!moviesAllCardsArr) {
-    return getAllMovies()
-      .then((data) => {
-        setmoviesAllCardsArr(data);
-        return data;
-      })
-      .catch((err) => {
-        return('Ошибка получения данных' + err);
-      });
-   }
+      return getAllMovies()
+        .then((data) => {
+          // проставим лайки
+          return moviesApi.getSavedMovies().then((savedData) => {
+            // убедимся, что данные есть
+            return typeof data === 'string'
+              ? new Error('что-то не так с нашим сервером')
+              : data.map((movie) => ({
+                  ...movie,
+                  like: savedData.some((item) => item.movieId === movie.id),
+                }));
+          });
+        })
+        .then((data) => {
+          setmoviesAllCardsArr(data);
+          return data;
+        })
+        .catch((err) => {
+          return 'Ошибка получения данных ' + err;
+        });
+    }
 
-    return new Promise((res) => {res(moviesAllCardsArr)});  
+    return new Promise((res) => {
+      res(moviesAllCardsArr);
+    });
   };
- 
+
   return (
     <div className={`App ${location.pathname === '/' ? 'App_gray' : ''}`}>
       <Header />
@@ -98,7 +112,7 @@ function App() {
             />
           }
         />
-        <Route path='/saved-movies' element={<SavedMovies loggedIn={true} />} />
+        <Route path='/saved-movies' element={<SavedMovies />} />
         <Route
           path='/profile'
           element={

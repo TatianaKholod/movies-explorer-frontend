@@ -38,7 +38,7 @@ function MoviesCard({ card, handleOnClickLike }) {
             name='like-toggle'
             //TODO замени false на признак карточки сохраненной
             className={`movies-card__like-toggle link ${
-              false ? 'movies-card__like-toggle_on' : ''
+              card.like ? 'movies-card__like-toggle_on' : ''
             }`}
             aria-label='Нравится'
             type='button'
