@@ -6,7 +6,7 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
   const location = useLocation();
 
   const [keyWord, setKeyWord] = useState('');
-  const [durationTogl, setDurationTogl] = useState(false);
+  const [durationToggle, setDurationToggle] = useState(false);
   const [searhPlaceholder, setSearhPlaceholder] = useState('Фильм');
 
   const handleChangeKeyWord = (e) =>{
@@ -14,21 +14,21 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
   }
   const handleClicSearchBtnForm = (e) => {
     e.preventDefault();
-    (keyWord === '')&&(location.pathname === '/movies')
+    (!keyWord)&&(location.pathname === '/movies')
       ? (setSearhPlaceholder('Нужно ввести ключевое слово'))
-      : handleClicSearchBtn(keyWord, durationTogl);
+      : handleClicSearchBtn(keyWord, durationToggle);
   };
   const handleClicCheckDurationForm = (e) => {
-    setDurationTogl(e.target.checked);
+    setDurationToggle(e.target.checked);
     // слово передадим для ситуации, когда отображены сохраненные данные и нужен новый фильтр
     handleClicCheckDuration(e.target.checked, keyWord);
   };
   useEffect(() => {
     // если есть данные в localStorage покажем их только на странице фильмов
     if (location.pathname !== '/movies') return;
-    const check = (localStorage.getItem('durationTogl')==='false')? false: true;
+    const check = (localStorage.getItem('durationToggle')==='false')? false: true;
     setKeyWord(localStorage.getItem('searchWord'));
-    setDurationTogl(check);
+    setDurationToggle(check);
   }, [location.pathname]);
 
   return (
@@ -40,7 +40,7 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
             className='search-form__search-input'
             type='search'
             placeholder={searhPlaceholder}
-            value={keyWord}
+            value={keyWord||''}
             onChange={handleChangeKeyWord}
           ></input>
           <button
@@ -57,7 +57,7 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
               type='checkbox'
               id='search-checkbox'
               onChange={handleClicCheckDurationForm}
-              checked={durationTogl}
+              checked={durationToggle}
             ></input>
             <span className='search-form__search-checkbox-switch'>
               Короткометражки

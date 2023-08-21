@@ -18,7 +18,7 @@ function AuthForm({
   });
 
   const location = useLocation();
-
+  
   useEffect(() => {
     setValues({ 'name-input': '', 'email-input': '', 'password-input': '' });
   }, [setValues]);

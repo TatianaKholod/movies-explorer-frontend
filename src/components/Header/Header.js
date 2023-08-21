@@ -3,10 +3,11 @@ import HeaderNav from './HeaderNav/HeaderNav';
 import logo from '../../images/logo.svg';
 import './Header.css';
 
-function Header() {
+function Header({loggedIn}) {
+  const headerArr = loggedIn ? ['/movies', '/saved-movies', '/profile','/'] :['/movies', '/saved-movies', '/profile'];
   return (
     <Routes>
-      {['/movies', '/saved-movies', '/profile'].map((routPath, key) => (
+      {headerArr.map((routPath, key) => (
         <Route
           key={key}
           path={routPath}

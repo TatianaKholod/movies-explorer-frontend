@@ -1,4 +1,4 @@
-import {BASE_URL} from "./Auth.js";
+import {BASE_URL} from "./AuthApi.js";
 
 class MoviesApi {
   constructor(options) {
@@ -25,7 +25,7 @@ class MoviesApi {
     });
   }
   deleteSavedMovie(movieId) {
-    return this._request(`/${movieId}`, {
+    return this._request(`/movies/${movieId}`, {
       method: 'DELETE',
       credentials: this.credentials,
       headers: this.headers,

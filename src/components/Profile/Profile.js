@@ -1,23 +1,31 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useContext } from 'react';
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import './Profile.css';
 
-function Profile({ user }) {
+function Profile({handleSignOut,handleSubmitEditProfile}) {
+  const currentUser = useContext(CurrentUserContext);
+  //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
+  //добавить валидацию TODO
+  const [isVaalid, setIsValid] = useState(false);
+  //инпуты
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  //сообщение об ощибке
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    setName(user.name);
-    setEmail(user.email);
-  }, [user]);
+    setName(currentUser.name);
+    setEmail(currentUser.email);
+  }, [currentUser]);
 
   const editForm = () => {
     setIsEditableForm(true);
   };
 
   const handleSubmit = () => {
+    handleSubmitEditProfile({name,email});
     // временно для тестирования верстки
     const saveOk = false;
     if (saveOk) {
@@ -29,15 +37,17 @@ function Profile({ user }) {
   };
 
   const handleChangeName = (e) => {
+    (currentUser.name !== e.target.value) ? setIsValid(true): setIsValid(false);
     setName(e.target.value);
   }
   const handleChangeEmail = (e) => {
+    (currentUser.email !== e.target.value) ? setIsValid(true): setIsValid(false);
     setEmail(e.target.value);
   }
   
   return (
     <main className='profile'>
-      <h2 className='profile__title'>Привет, {user.name}!</h2>
+      <h2 className='profile__title'>Привет, {currentUser.name}!</h2>
       <div className='profile__container'>
         <label className='profile__label' htmlFor='name'>
           Имя
@@ -46,7 +56,7 @@ function Profile({ user }) {
             name='name'
             id='name'
             type='text'
-            value={name}
+            value={name||''}
             disabled={isEditableForm ? false : true}
             onChange={handleChangeName}
             placeholder='Имя'
@@ -63,7 +73,7 @@ function Profile({ user }) {
             name='email'
             id='email'
             type='email'
-            value={email}
+            value={email||''}
             pattern=''
             disabled={isEditableForm ? false : true}
             onChange={handleChangeEmail}
@@ -80,7 +90,7 @@ function Profile({ user }) {
             className='profile__submit-btn button'
             type='submit'
             onClick={handleSubmit}
-            disabled={errorMessage ? true : false}
+            disabled={(errorMessage||!isVaalid) ? true : false}
           >
             Сохранить
           </button>
@@ -94,7 +104,7 @@ function Profile({ user }) {
           >
             Редактировать
           </button>
-          <Link className='profile__exit-link link link_color_red' to='/'>
+          <Link className='profile__exit-link link link_color_red' onClick={handleSignOut} to='/'>
             Выйти из аккаунта
           </Link>
         </>

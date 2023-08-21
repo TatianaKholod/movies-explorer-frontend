@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import './MoviesCard.css';
 
 
@@ -8,13 +9,30 @@ function MoviesCard({ card, handleOnClickLike }) {
   const hours = Math.trunc(card.duration / 60);
   const duration = `${hours > 0 ? hours + 'ч' : ''}${card.duration % 60}м`;
 
+  const [stateLikeCard, setStateLikeCard] = useState(false);
+
+  useEffect(() =>{setStateLikeCard(card.like)},[card.like]);
+
   const handleOnClickCard = (e) => {
     if (e.target.type === 'button') return;
     window.open(card.trailerLink);
   };
 
-  const handleOnClickLikeCard = () =>{
-    handleOnClickLike({...card,'image':imgUrl});
+  const handleOnClickLikeCard = (e) =>{
+    // пока меняем состояние кнопка не должна нажиматься повторно
+    e.target.disabled = true;
+    handleOnClickLike({...card,'image':imgUrl})
+    .then((like) => {
+      card.like=like;
+      setStateLikeCard(like);
+      e.target.disabled = false;
+    });
+  }
+  const handleOnClickDelCard = (e) => {
+    e.target.disabled = true;
+    //нужно удалить карточку из массива и... TODO
+    handleOnClickLike(card); 
+    e.target.disabled = false;
   }
   return (
     <li className='movies-card' onClick={handleOnClickCard}>
@@ -30,15 +48,15 @@ function MoviesCard({ card, handleOnClickLike }) {
             type='button'
             name='remove-card'
             aria-label='Удалить'
+            onClick={handleOnClickDelCard}
           >
             +
           </button>
         ) : (
           <button
             name='like-toggle'
-            //TODO замени false на признак карточки сохраненной
             className={`movies-card__like-toggle link ${
-              card.like ? 'movies-card__like-toggle_on' : ''
+              stateLikeCard ? 'movies-card__like-toggle_on' : ''
             }`}
             aria-label='Нравится'
             type='button'

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
 
-function Movies({ handleOnClickLike, getInitialData }) {
+function Movies({ handleOnClickLike, getInitialData, stateLike }) {
   const [isLoading, setIsLoading] = useState(false);
   const [moviesCardArr, setMoviesCardArr] = useState(null);
   const [searchWord, setSearchWord] = useState('');
-  const [durationTogl, setDurationTogl] = useState(false);
+  const [durationToggle, setDurationToggle] = useState(false);
   const [messageStr, setMessageStr] = useState('');
 
   useEffect(() => {
@@ -15,12 +15,12 @@ function Movies({ handleOnClickLike, getInitialData }) {
     setIsLoading(true);
 
     const getCurrentData = (arr) => {
-      const resFilter = doFilterData(arr,searchWord,durationTogl);
+      const resFilter = doFilterData(arr, searchWord, durationToggle);
       setMoviesCardArr(resFilter);
       if (resFilter.length === 0) setMessageStr('Ничего не найдено');
       else {
         // данные в localStorage обновляем после каждого поиска
-        localStorage.setItem('durationTogl', durationTogl);
+        localStorage.setItem('durationToggle', durationToggle);
         localStorage.setItem('searchWord', searchWord);
         localStorage.setItem('moviesCardArr', JSON.stringify(resFilter)); //удалить при выходе из аккаунта localStorage.clear() TODO
       }
@@ -40,8 +40,7 @@ function Movies({ handleOnClickLike, getInitialData }) {
       .finally(() => {
         setIsLoading(false);
       });
-
-  }, [searchWord, durationTogl]);
+  }, [searchWord, durationToggle, getInitialData]);
 
   useEffect(() => {
     // если есть данные в localStorage - покажем их
@@ -50,25 +49,34 @@ function Movies({ handleOnClickLike, getInitialData }) {
     setMoviesCardArr(savedData);
   }, []);
 
+  useEffect(() => {
+    //обновляем лайк в массиве и пересохраняем его в localStorage
+    stateLike.movieId !== '' && moviesCardArr &&
+      (moviesCardArr.find((item) => item.id === stateLike.movieId).like =
+        stateLike.likeId);
+    localStorage.setItem('moviesCardArr', JSON.stringify(moviesCardArr));
+  }, [stateLike,moviesCardArr]);
+
   const handleClicSearchBtn = (keyWord, checkDuration) => {
     setSearchWord(keyWord);
-    setDurationTogl(checkDuration);
+    setDurationToggle(checkDuration);
   };
 
   const handleClicCheckDuration = (checkDuration, keyWord) => {
     setSearchWord(keyWord);
-    setDurationTogl(checkDuration);
+    setDurationToggle(checkDuration);
   };
 
   return (
     <main>
       <MoviesPage
         isLoading={isLoading}
-        moviesCardArr={moviesCardArr}
+        moviesCardArr={moviesCardArr||[]}
         handleOnClickLike={handleOnClickLike}
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
         messageStr={messageStr}
+        stateLike={stateLike}
       />
     </main>
   );
