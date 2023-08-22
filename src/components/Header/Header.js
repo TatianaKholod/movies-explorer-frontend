@@ -1,10 +1,15 @@
 import { Link, Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import HeaderNav from './HeaderNav/HeaderNav';
 import logo from '../../images/logo.svg';
 import './Header.css';
 
 function Header({loggedIn}) {
-  const headerArr = loggedIn ? ['/movies', '/saved-movies', '/profile','/'] :['/movies', '/saved-movies', '/profile'];
+  const [headerArr,setHeaderArr] = useState(['/movies', '/saved-movies', '/profile']);
+  useEffect(() => {
+    setHeaderArr(loggedIn ? ['/movies', '/saved-movies', '/profile','/'] : ['/movies', '/saved-movies', '/profile']);
+  }, [loggedIn]);
+
   return (
     <Routes>
       {headerArr.map((routPath, key) => (

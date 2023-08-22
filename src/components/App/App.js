@@ -1,5 +1,6 @@
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import ProtectedRoute from './ProtectedRoute';
 import Login from '../Login/Login';
 import Register from '../Register/Register';
 import Main from '../Main/Main';
@@ -39,7 +40,7 @@ function App() {
       .then((data) => {
         if (data) {
           setLoggedIn(true);
-          //установим тек. пользователя при входе//TODO
+          //установим тек. пользователя при входе
           setCurrentUser(data);
         } else {
           setLoggedIn(false);
@@ -58,7 +59,7 @@ function App() {
         handleSubmitLogin(email, pwd);
       })
       .catch((err) => {
-        setErrMessage('Ошибка регистрации '+err);
+        setErrMessage('Ошибка регистрации ' + err);
       });
   };
 
@@ -69,10 +70,11 @@ function App() {
       .then((data) => {
         setCurrentUser(data);
         localStorage.clear();
+        setLoggedIn(true);
         navigate('/movies');
       })
       .catch((err) => {
-        setErrMessage('Ошибка авторизации '+err);
+        setErrMessage('Ошибка авторизации ' + err);
       });
   };
   const handleSignOut = () => {
@@ -196,39 +198,67 @@ function App() {
         <Routes>
           <Route
             path='/signin'
-            element={<Login handleSubmitLogin={handleSubmitLogin} errMessage={errMessage} />}
+            element={
+              <Login
+                handleSubmitLogin={handleSubmitLogin}
+                errMessage={errMessage}
+              />
+            }
           />
           <Route
             path='/signup'
-            element={<Register handleSubmitRegister={handleSubmitRegister} errMessage={errMessage} />}
+            element={
+              <Register
+                handleSubmitRegister={handleSubmitRegister}
+                errMessage={errMessage}
+              />
+            }
           />
           <Route path='/' element={<Main />} />
           <Route
             path='/movies'
             element={
-              <Movies
-                handleOnClickLike={handleOnClickLike}
-                getInitialData={getInitialData}
-                stateLike={stateLike}
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                element={
+                  <Movies
+                    handleOnClickLike={handleOnClickLike}
+                    getInitialData={getInitialData}
+                    stateLike={stateLike}
+                    loggedIn={loggedIn}
+                  />
+                }
               />
             }
           />
           <Route
             path='/saved-movies'
             element={
-              <SavedMovies
-                handleOnClickDel={handleOnClickDel}
-                stateLike={stateLike}
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                element={
+                  <SavedMovies
+                    handleOnClickDel={handleOnClickDel}
+                    stateLike={stateLike}
+                    loggedIn={loggedIn}
+                  />
+                }
               />
             }
           />
           <Route
             path='/profile'
             element={
-              <Profile
-                handleSignOut={handleSignOut}
-                handleSubmitEditProfile={handleSubmitEditProfile}
-                errMessage={errMessage}
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                element={
+                  <Profile
+                    handleSignOut={handleSignOut}
+                    handleSubmitEditProfile={handleSubmitEditProfile}
+                    errMessage={errMessage}
+                    loggedIn={loggedIn}
+                  />
+                }
               />
             }
           />

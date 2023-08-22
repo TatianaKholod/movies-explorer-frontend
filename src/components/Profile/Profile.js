@@ -4,7 +4,7 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 import './Profile.css';
 
-function Profile({ handleSignOut, handleSubmitEditProfile, errMessage }) {
+function Profile({ handleSignOut, handleSubmitEditProfile, errMessage, loggedIn }) {
   const currentUser = useContext(CurrentUserContext);
   //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
@@ -17,7 +17,11 @@ function Profile({ handleSignOut, handleSubmitEditProfile, errMessage }) {
 
   useEffect(() => {
     resetForm();
-  }, [resetForm]);
+  }, [loggedIn,resetForm]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+  }, [loggedIn]);
 
   useEffect(() => {
     if (errMessage) setIsEditableForm(true);
@@ -26,14 +30,6 @@ function Profile({ handleSignOut, handleSubmitEditProfile, errMessage }) {
   const editForm = () => {
     setIsEditableForm(true);
   };
-
- /* const handleSubmit = (e) => {
-    e.preventDefault();
-    handleSubmitEditProfile({
-      name: values.name || currentUser.name,
-      email: values.email || currentUser.email,
-    }).then(() => setIsEditableForm(false));
-  };*/
 
   const handleOnClickBtn =(e) =>{
     //защитимся от многократных нажатий

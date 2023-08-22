@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
 
-function Movies({ handleOnClickLike, getInitialData, stateLike }) {
+function Movies({ handleOnClickLike, getInitialData, stateLike, loggedIn }) {
   const [isLoading, setIsLoading] = useState(false);
   const [moviesCardArr, setMoviesCardArr] = useState(null);
   const [searchWord, setSearchWord] = useState('');
@@ -43,11 +43,12 @@ function Movies({ handleOnClickLike, getInitialData, stateLike }) {
   }, [searchWord, durationToggle, getInitialData]);
 
   useEffect(() => {
+    if (!loggedIn) return;
     // если есть данные в localStorage - покажем их
     const savedData = JSON.parse(localStorage.getItem('moviesCardArr'));
     if (!savedData) return;
     setMoviesCardArr(savedData);
-  }, []);
+  }, [loggedIn]);
 
   useEffect(() => {
     //обновляем лайк в массиве и пересохраняем его в localStorage

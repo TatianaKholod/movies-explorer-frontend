@@ -5,7 +5,7 @@ import doFilterData from '../../utils/Searh';
 import moviesApi from '../../utils/MoviesApi';
 
 //function SavedMovies({ handleOnClickDel, stateLike }) {
-  function SavedMovies() {
+  function SavedMovies(loggedIn) {
   const [isLoading, setIsLoading] = useState(false);
   const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
   const [savedMoviesCardArr, setSavedMoviesCardArr] = useState(null);
@@ -15,6 +15,7 @@ import moviesApi from '../../utils/MoviesApi';
 
   //получим данные, если авторизованы
   useEffect(() => {
+    if (!loggedIn) return;
     setIsLoading(true);
     setMessageStr('');
     moviesApi
@@ -31,7 +32,7 @@ import moviesApi from '../../utils/MoviesApi';
         );
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [loggedIn]);
 
   //отсортируем данные, если изменились параметры поиска
   useEffect(() => {
