@@ -25,6 +25,7 @@ function App() {
   //здесь будем хранить id карточки, которую добавляют или удаляют
   const [stateLike, setStateLike] = useState({ movieId: '', likeId: false });
   const [loggedIn, setLoggedIn] = useState(false);
+  const [errMessage, setErrMessage] = useState('');
 
   const [currentUser, setCurrentUser] = useState({});
 
@@ -40,7 +41,6 @@ function App() {
           setLoggedIn(true);
           //установим тек. пользователя при входе//TODO
           setCurrentUser(data);
-          //navigate('/movies');
         } else {
           setLoggedIn(false);
         }
@@ -51,28 +51,28 @@ function App() {
   };
 
   const handleSubmitRegister = (name, email, pwd) => {
+    setErrMessage('');
     return authApi
       .register(name, email, pwd)
       .then(() => {
         handleSubmitLogin(email, pwd);
       })
       .catch((err) => {
-        console.log('Ошибка регистрации ' + err);
-        //TODO отправить сообщение в форму
+        setErrMessage('Ошибка регистрации '+err);
       });
   };
 
   const handleSubmitLogin = (email, pwd) => {
+    setErrMessage('');
     return authApi
       .autorize(email, pwd)
       .then((data) => {
         setCurrentUser(data);
-        //очистить локал стораж TODO
+        localStorage.clear();
         navigate('/movies');
       })
       .catch((err) => {
-        console.log('Ошибка авторизации ' + err);
-        //handleIsOpenAuthMsg(true); TODO отобрази сообщение об ошибке
+        setErrMessage('Ошибка авторизации '+err);
       });
   };
   const handleSignOut = () => {
@@ -87,16 +87,15 @@ function App() {
       });
   };
   const handleSubmitEditProfile = ({ name, email }) => {
+    setErrMessage('');
     return authApi
       .updateProfile(name, email)
       .then((data) => {
         setCurrentUser(data);
-        //очистить локал стораж TODO
-        navigate('/movies');
+        return data;
       })
       .catch((err) => {
-        console.log('Ошибка авторизации ' + err);
-        //handleIsOpenAuthMsg(true); TODO отобрази сообщение об ошибке
+        setErrMessage('При обновлении профиля произошла ошибка');
       });
   };
   const doDelLike = (movie) => {
@@ -197,11 +196,11 @@ function App() {
         <Routes>
           <Route
             path='/signin'
-            element={<Login handleSubmitLogin={handleSubmitLogin} />}
+            element={<Login handleSubmitLogin={handleSubmitLogin} errMessage={errMessage} />}
           />
           <Route
             path='/signup'
-            element={<Register handleSubmitRegister={handleSubmitRegister} />}
+            element={<Register handleSubmitRegister={handleSubmitRegister} errMessage={errMessage} />}
           />
           <Route path='/' element={<Main />} />
           <Route
@@ -216,7 +215,12 @@ function App() {
           />
           <Route
             path='/saved-movies'
-            element={<SavedMovies handleOnClickDel={handleOnClickDel} stateLike={stateLike} />}
+            element={
+              <SavedMovies
+                handleOnClickDel={handleOnClickDel}
+                stateLike={stateLike}
+              />
+            }
           />
           <Route
             path='/profile'
@@ -224,6 +228,7 @@ function App() {
               <Profile
                 handleSignOut={handleSignOut}
                 handleSubmitEditProfile={handleSubmitEditProfile}
+                errMessage={errMessage}
               />
             }
           />

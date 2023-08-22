@@ -1,52 +1,55 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect,useContext } from 'react';
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useState, useEffect, useContext } from 'react';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 import './Profile.css';
 
-function Profile({handleSignOut,handleSubmitEditProfile}) {
+function Profile({ handleSignOut, handleSubmitEditProfile, errMessage }) {
   const currentUser = useContext(CurrentUserContext);
   //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
-  //добавить валидацию TODO
-  const [isVaalid, setIsValid] = useState(false);
-  //инпуты
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  //сообщение об ощибке
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormWithValidation({
+      name: currentUser.name,
+      email: currentUser.email,
+    });
 
   useEffect(() => {
-    setName(currentUser.name);
-    setEmail(currentUser.email);
-  }, [currentUser]);
+    resetForm();
+  }, [resetForm]);
+
+  useEffect(() => {
+    if (errMessage) setIsEditableForm(true);
+  }, [errMessage]);
 
   const editForm = () => {
     setIsEditableForm(true);
   };
 
-  const handleSubmit = () => {
-    handleSubmitEditProfile({name,email});
-    // временно для тестирования верстки
-    const saveOk = false;
-    if (saveOk) {
-      setIsEditableForm(false);
-      setErrorMessage('');
-    } else {
-      setErrorMessage('При обновлении профиля произошла ошибка.');
-    }
-  };
+ /* const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSubmitEditProfile({
+      name: values.name || currentUser.name,
+      email: values.email || currentUser.email,
+    }).then(() => setIsEditableForm(false));
+  };*/
 
-  const handleChangeName = (e) => {
-    (currentUser.name !== e.target.value) ? setIsValid(true): setIsValid(false);
-    setName(e.target.value);
+  const handleOnClickBtn =(e) =>{
+    //защитимся от многократных нажатий
+    e.target.disabled = true;
+
+    handleSubmitEditProfile({
+      name: values.name || currentUser.name,
+      email: values.email || currentUser.email,
+    }).then(() => setIsEditableForm(false));
   }
-  const handleChangeEmail = (e) => {
-    (currentUser.email !== e.target.value) ? setIsValid(true): setIsValid(false);
-    setEmail(e.target.value);
-  }
-  
   return (
-    <main className='profile'>
+    <form
+      className='profile'
+      name='profile'
+      autoComplete='off'
+    >
       <h2 className='profile__title'>Привет, {currentUser.name}!</h2>
       <div className='profile__container'>
         <label className='profile__label' htmlFor='name'>
@@ -56,15 +59,17 @@ function Profile({handleSignOut,handleSubmitEditProfile}) {
             name='name'
             id='name'
             type='text'
-            value={name||''}
+            value={values.name || currentUser.name || ''}
             disabled={isEditableForm ? false : true}
-            onChange={handleChangeName}
+            onChange={handleChange}
             placeholder='Имя'
             required
             minLength='2'
             maxLength='40'
+            pattern='^[A-zЁёА-я\-\s]+$'
           ></input>
         </label>
+        <span className='profile__error'>{errors.name}</span>
 
         <label className='profile__label' htmlFor='email'>
           E-mail
@@ -73,24 +78,24 @@ function Profile({handleSignOut,handleSubmitEditProfile}) {
             name='email'
             id='email'
             type='email'
-            value={email||''}
-            pattern=''
+            value={values.email || currentUser.email || ''}
             disabled={isEditableForm ? false : true}
-            onChange={handleChangeEmail}
+            onChange={handleChange}
             placeholder='E-mail'
             required
           ></input>
         </label>
+        <span className='profile__error'>{errors.email}</span>
       </div>
 
       {isEditableForm ? (
         <>
-          <span className='profile__error'>{errorMessage}</span>
+          <span className='profile__error'>{errMessage}</span>
           <button
             className='profile__submit-btn button'
             type='submit'
-            onClick={handleSubmit}
-            disabled={(errorMessage||!isVaalid) ? true : false}
+            onClick={handleOnClickBtn}
+            disabled={!isValid ? true : false}
           >
             Сохранить
           </button>
@@ -104,12 +109,16 @@ function Profile({handleSignOut,handleSubmitEditProfile}) {
           >
             Редактировать
           </button>
-          <Link className='profile__exit-link link link_color_red' onClick={handleSignOut} to='/'>
+          <Link
+            className='profile__exit-link link link_color_red'
+            onClick={handleSignOut}
+            to='/'
+          >
             Выйти из аккаунта
           </Link>
         </>
       )}
-    </main>
+    </form>
   );
 }
 

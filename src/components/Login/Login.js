@@ -1,6 +1,6 @@
 import AuthForm from '../AuthForm/AuthForm';
 
-function Login({ handleSubmitLogin }) {
+function Login({ handleSubmitLogin, errMessage }) {
   function onLogin(values) {
     handleSubmitLogin(values['email-input'], values['password-input']);
   }
@@ -12,6 +12,7 @@ function Login({ handleSubmitLogin }) {
       textLinkBefore='Ещё не зарегистрированы?'
       textLink='Регистрация'
       handleSubmit={onLogin}
+      errMessage={errMessage}
     />
   );
 }

@@ -26,7 +26,7 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
   useEffect(() => {
     // если есть данные в localStorage покажем их только на странице фильмов
     if (location.pathname !== '/movies') return;
-    const check = (localStorage.getItem('durationToggle')==='false')? false: true;
+    const check = (localStorage.getItem('durationToggle')==='true')? true: false;
     setKeyWord(localStorage.getItem('searchWord'));
     setDurationToggle(check);
   }, [location.pathname]);

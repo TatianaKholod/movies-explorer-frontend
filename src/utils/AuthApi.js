@@ -62,7 +62,7 @@ export const updateProfile = (name, email) => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      body: JSON.stringify({ name, email }),
     },
+    body: JSON.stringify({ name, email }),
   });
 };

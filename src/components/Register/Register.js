@@ -1,6 +1,6 @@
 import AuthForm from '../AuthForm/AuthForm';
 
-function Register({ handleSubmitRegister }) {
+function Register({ handleSubmitRegister, errMessage}) {
   
   function onRegister(values) {
     handleSubmitRegister(
@@ -17,6 +17,7 @@ function Register({ handleSubmitRegister }) {
       textLinkBefore='Уже зарегистрированы?'
       textLink='Войти'
       handleSubmit={onRegister}
+      errMessage={errMessage}
     />
   );
 }

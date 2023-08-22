@@ -59,6 +59,10 @@
   line-height: 17px;
   margin-bottom: 16px;
 }
+.button-input-error{
+  align-self: center;
+  margin-bottom: 10px;
+}
 
 .auth-form__link-before {
   color: rgba(160, 160, 160, 1);

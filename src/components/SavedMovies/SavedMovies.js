@@ -4,7 +4,8 @@ import doFilterData from '../../utils/Searh';
 
 import moviesApi from '../../utils/MoviesApi';
 
-function SavedMovies({ handleOnClickDel, stateLike }) {
+//function SavedMovies({ handleOnClickDel, stateLike }) {
+  function SavedMovies() {
   const [isLoading, setIsLoading] = useState(false);
   const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
   const [savedMoviesCardArr, setSavedMoviesCardArr] = useState(null);
@@ -74,7 +75,7 @@ function SavedMovies({ handleOnClickDel, stateLike }) {
       <MoviesPage
         isLoading={isLoading}
         moviesCardArr={savedMoviesCardArr || []}
-        handleOnClickLike={handleOnClickDel}
+        //handleOnClickLike={handleOnClickDel}
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
         messageStr={messageStr}
