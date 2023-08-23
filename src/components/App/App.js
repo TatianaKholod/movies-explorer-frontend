@@ -27,7 +27,6 @@ function App() {
   const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const [errMessage, setErrMessage] = useState('');
 
   const [currentUser, setCurrentUser] = useState({});
 
@@ -49,19 +48,17 @@ function App() {
   };
 
   const handleSubmitRegister = (name, email, pwd) => {
-    setErrMessage('');
     return authApi
       .register(name, email, pwd)
       .then(() => {
         handleSubmitLogin(email, pwd);
       })
       .catch((err) => {
-        setErrMessage('Ошибка регистрации ' + err);
+        return 'Ошибка регистрации ' + err;
       });
   };
 
   const handleSubmitLogin = (email, pwd) => {
-    setErrMessage('');
     return authApi
       .autorize(email, pwd)
       .then((data) => {
@@ -71,7 +68,7 @@ function App() {
         navigate('/movies');
       })
       .catch((err) => {
-        setErrMessage('Ошибка авторизации ' + err);
+        return 'Ошибка авторизации ' + err;
       });
   };
   const handleSignOut = () => {
@@ -87,7 +84,6 @@ function App() {
       });
   };
   const handleSubmitEditProfile = ({ name, email }) => {
-    setErrMessage('');
     return authApi
       .updateProfile(name, email)
       .then((data) => {
@@ -95,7 +91,7 @@ function App() {
         return data;
       })
       .catch((err) => {
-        setErrMessage('При обновлении профиля произошла ошибка ' + err);
+        return'При обновлении профиля произошла ошибка ' + err;
       });
   };
   const doDelLike = (idCard) => {
@@ -203,7 +199,6 @@ function App() {
             element={
               <Login
                 handleSubmitLogin={handleSubmitLogin}
-                errMessage={errMessage}
               />
             }
           />
@@ -212,7 +207,6 @@ function App() {
             element={
               <Register
                 handleSubmitRegister={handleSubmitRegister}
-                errMessage={errMessage}
               />
             }
           />
@@ -258,7 +252,6 @@ function App() {
                   <Profile
                     handleSignOut={handleSignOut}
                     handleSubmitEditProfile={handleSubmitEditProfile}
-                    errMessage={errMessage}
                     loggedIn={loggedIn}
                   />
                 }

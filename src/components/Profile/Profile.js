@@ -7,12 +7,12 @@ import './Profile.css';
 function Profile({
   handleSignOut,
   handleSubmitEditProfile,
-  errMessage,
   loggedIn,
 }) {
   const currentUser = useContext(CurrentUserContext);
   //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
+  const [errMessage, setErrMessage] = useState('');
 
   const { values, handleChange, errors, isValid, resetForm } =
     useFormWithValidation({
@@ -21,16 +21,10 @@ function Profile({
     });
 
   useEffect(() => {
-    resetForm();
-  }, [loggedIn, resetForm]);
-
-  useEffect(() => {
     if (!loggedIn) return;
-  }, [loggedIn]);
-
-  useEffect(() => {
-    if (errMessage) setIsEditableForm(true);
-  }, [errMessage]);
+    resetForm();
+    setErrMessage('')
+  }, [loggedIn, resetForm]);
 
   const editForm = () => {
     setIsEditableForm(true);
@@ -43,7 +37,12 @@ function Profile({
     handleSubmitEditProfile({
       name: values.name || currentUser.name,
       email: values.email || currentUser.email,
-    }).then(() => setIsEditableForm(false));
+    }).then((data) => {
+      if (typeof data === 'string') {
+        setErrMessage(data);
+        setIsEditableForm(true);
+      }
+      else setIsEditableForm(false)});
   };
   return (
     <form className='profile' name='profile' autoComplete='off'>
