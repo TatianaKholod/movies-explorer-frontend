@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
 
-function Movies({ handleOnClickLike, getInitialData, stateLike, loggedIn }) {
+function Movies({ handleOnClickLike, getInitialData, loggedIn, arrForLikeCard }) {
   const [isLoading, setIsLoading] = useState(false);
   const [moviesCardArr, setMoviesCardArr] = useState(null);
   const [searchWord, setSearchWord] = useState('');
@@ -22,16 +22,15 @@ function Movies({ handleOnClickLike, getInitialData, stateLike, loggedIn }) {
         // данные в localStorage обновляем после каждого поиска
         localStorage.setItem('durationToggle', durationToggle);
         localStorage.setItem('searchWord', searchWord);
-        localStorage.setItem('moviesCardArr', JSON.stringify(resFilter)); //удалить при выходе из аккаунта localStorage.clear() TODO
+        localStorage.setItem('moviesCardArr', JSON.stringify(resFilter));
       }
     };
+
     getInitialData()
       .then((data) => {
         setIsLoading(false);
         typeof data === 'string'
-          ? setMessageStr(
-              'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
-            )
+          ? setMessageStr(data)
           : getCurrentData(data);
       })
       .catch((err) => {
@@ -45,18 +44,11 @@ function Movies({ handleOnClickLike, getInitialData, stateLike, loggedIn }) {
   useEffect(() => {
     if (!loggedIn) return;
     // если есть данные в localStorage - покажем их
+    // нужно еще массив сохраненных фильмов получить, иначе лайки не проставить??? TODO
     const savedData = JSON.parse(localStorage.getItem('moviesCardArr'));
     if (!savedData) return;
     setMoviesCardArr(savedData);
   }, [loggedIn]);
-
-  useEffect(() => {
-    //обновляем лайк в массиве и пересохраняем его в localStorage
-    stateLike.movieId !== '' && moviesCardArr &&
-      (moviesCardArr.find((item) => item.id === stateLike.movieId).like =
-        stateLike.likeId);
-    localStorage.setItem('moviesCardArr', JSON.stringify(moviesCardArr));
-  }, [stateLike,moviesCardArr]);
 
   const handleClicSearchBtn = (keyWord, checkDuration) => {
     setSearchWord(keyWord);
@@ -77,7 +69,7 @@ function Movies({ handleOnClickLike, getInitialData, stateLike, loggedIn }) {
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
         messageStr={messageStr}
-        stateLike={stateLike}
+        arrForLikeCard={arrForLikeCard}
       />
     </main>
   );

@@ -8,6 +8,7 @@ function MoviesCardList({
   isLoading,
   handleOnClickLike,
   messageStr,
+  arrForLikeCard
 }) {
   const refGrid = createRef();
 
@@ -97,6 +98,7 @@ function MoviesCardList({
                     key={key}
                     card={card}
                     handleOnClickLike={handleOnClickLike}
+                    arrForLikeCard={arrForLikeCard}
                   />
                 ))}
               </ul>

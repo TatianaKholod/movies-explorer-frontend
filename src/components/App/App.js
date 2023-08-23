@@ -21,10 +21,11 @@ import getAllMovies from '../../utils/MainApi';
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-
+  //для всех фильмов
   const [moviesAllCardsArr, setmoviesAllCardsArr] = useState(0);
-  //здесь будем хранить id карточки, которую добавляют или удаляют
-  const [stateLike, setStateLike] = useState({ movieId: '', likeId: false });
+  //для сохраненных фильмов
+  const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [errMessage, setErrMessage] = useState('');
 
@@ -83,6 +84,7 @@ function App() {
       .then(() => {
         navigate('/');
         setLoggedIn(false);
+        localStorage.clear();
       })
       .catch((err) => {
         console.log('Ошибка авторизации ' + err);
@@ -97,21 +99,14 @@ function App() {
         return data;
       })
       .catch((err) => {
-        setErrMessage('При обновлении профиля произошла ошибка');
+        setErrMessage('При обновлении профиля произошла ошибка ' + err);
       });
   };
-  const doDelLike = (movie) => {
+  const doDelLike = (idCard) => {
     return moviesApi
-      .deleteSavedMovie(movie._id ? movie._id : movie.like)
+      .deleteSavedMovie(idCard)
       .then(() => {
-        const idDelCard = movie._id ? movie.movieId : movie.id;
-        // выключим лайк, если данные не из localStorage то обновим данные в массиве
-        if (moviesAllCardsArr) {
-          moviesAllCardsArr.find((item) => item.id === idDelCard).like = false;
-          setStateLike({ movieId: idDelCard, likeId: false });
-          //setmoviesAllCardsArr(moviesAllCardsArr);
-        }
-        return false;
+        setSavedMoviesAllCardArr(savedMoviesAllCardArr.filter((item) => item._id !== idCard));
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
@@ -135,55 +130,37 @@ function App() {
     return moviesApi
       .addSavedMovie(savedMovie)
       .then((data) => {
-        // включим лайк, если данные не из localStorage то обновим там данные для последующих фильтраций
-        if (moviesAllCardsArr) {
-          moviesAllCardsArr.find((item) => item.id === data.movieId).like =
-            data._id;
-          // setmoviesAllCardsArr(moviesAllCardsArr); //TODO похоже не нужно - проверь
-        }
-        setStateLike({ movieId: data.movieId, likeId: data._id });
-        return data._id;
+        savedMoviesAllCardArr ?
+        setSavedMoviesAllCardArr([data, ...savedMoviesAllCardArr])
+        :setSavedMoviesAllCardArr([data]); //если данные из localStorage, то просто добавим, а при монитровании загрузится весь ??? TODO
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
       });
   };
+
+  //лайки на странице фильмов
   const handleOnClickLike = (movie) => {
-    //if (!loggedIn) return; //TODO
-    return movie.like ? doDelLike(movie) : doAddLike(movie);
+    return movie.id ? doAddLike(movie) : doDelLike(movie);
   };
-  //удаление на мтранице сохраненных файлов
+  //удаление на cтранице сохраненных файлов
   const handleOnClickDel = (movie) => {
-    doDelLike(movie);
+    return doDelLike(movie);
   };
   // данные забираем здесь, чтобы при смене роутов не запрашивать еще раз
   const getInitialData = () => {
     if (!moviesAllCardsArr) {
-      return getAllMovies()
-        .then((data) => {
-          // проставим лайки
-          return moviesApi.getSavedMovies().then((savedData) => {
-            // убедимся, что данные есть
-            return typeof savedData === 'string' || typeof data === 'string'
-              ? new Error('что-то не так с одним из серверов')
-              : data.map((movie) => {
-                  const saved = savedData.find(
-                    (item) => item.movieId === movie.id
-                  );
-                  return {
-                    ...movie,
-                    like: saved ? saved._id : false,
-                  };
-                });
-          });
-        })
-        .then((data) => {
-          setmoviesAllCardsArr(data);
-          return data;
-        })
-        .catch((err) => {
-          return 'Ошибка получения данных ' + err;
-        });
+      return getInitialSaveData()
+        .then(() =>
+          getAllMovies().then((data) => {
+            setmoviesAllCardsArr(data);
+            return data;
+          })
+        )
+        .catch(
+          () =>
+            'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
+        );
     }
 
     return new Promise((res) => {
@@ -191,6 +168,22 @@ function App() {
     });
   };
 
+  const getInitialSaveData = () => {
+    if (savedMoviesAllCardArr)
+      return new Promise((res) => {
+        res(savedMoviesAllCardArr);
+      });
+    return moviesApi
+      .getSavedMovies()
+      .then((data) => {
+        setSavedMoviesAllCardArr(data);
+        return data;
+      })
+      .catch(
+        () =>
+          'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
+      );
+  };
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className={`App ${location.pathname === '/' ? 'App_gray' : ''}`}>
@@ -224,8 +217,8 @@ function App() {
                   <Movies
                     handleOnClickLike={handleOnClickLike}
                     getInitialData={getInitialData}
-                    stateLike={stateLike}
                     loggedIn={loggedIn}
+                    arrForLikeCard={getInitialSaveData()}
                   />
                 }
               />
@@ -239,8 +232,9 @@ function App() {
                 element={
                   <SavedMovies
                     handleOnClickDel={handleOnClickDel}
-                    stateLike={stateLike}
                     loggedIn={loggedIn}
+                    getInitialSaveData={getInitialSaveData}
+                    arrForLikeCard={[]}
                   />
                 }
               />
