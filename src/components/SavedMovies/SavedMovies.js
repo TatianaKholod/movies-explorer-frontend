@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
 
-function SavedMovies({loggedIn, getInitialSaveData, arrForLikeCard, handleOnClickDel}) {
+function SavedMovies({
+  loggedIn,
+  getInitialSaveData,
+  arrForLikeCards,
+  handleOnClickDel,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [savedMoviesCardArr, setSavedMoviesCardArr] = useState(null);
   const [searchWord, setSearchWord] = useState('');
@@ -53,7 +58,7 @@ function SavedMovies({loggedIn, getInitialSaveData, arrForLikeCard, handleOnClic
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
         messageStr={messageStr}
-        arrForLikeCard={arrForLikeCard}
+        arrForLikeCards={arrForLikeCards}
       />
     </main>
   );

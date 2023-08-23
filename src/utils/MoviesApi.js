@@ -1,4 +1,4 @@
-import {BASE_URL} from "./AuthApi.js";
+import { BASE_URL } from './AuthApi.js';
 
 class MoviesApi {
   constructor(options) {

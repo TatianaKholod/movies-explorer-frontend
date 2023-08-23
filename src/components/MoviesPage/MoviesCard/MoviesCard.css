@@ -19,7 +19,7 @@
   object-fit: cover;
   object-position: center;
   /*если нет картинки, то добавим цвет, чтобы были видны границы*/
-  background-color:  rgba(160, 160, 160, 1);
+  background-color: rgba(160, 160, 160, 1);
 }
 
 .movies-card__name {

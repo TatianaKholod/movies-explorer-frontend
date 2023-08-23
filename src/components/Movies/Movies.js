@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
 
-function Movies({ handleOnClickLike, getInitialData, loggedIn, arrForLikeCard }) {
+function Movies({
+  handleOnClickLike,
+  getInitialData,
+  loggedIn,
+  arrForLikeCards,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [moviesCardArr, setMoviesCardArr] = useState(null);
   const [searchWord, setSearchWord] = useState('');
@@ -29,9 +34,7 @@ function Movies({ handleOnClickLike, getInitialData, loggedIn, arrForLikeCard })
     getInitialData()
       .then((data) => {
         setIsLoading(false);
-        typeof data === 'string'
-          ? setMessageStr(data)
-          : getCurrentData(data);
+        typeof data === 'string' ? setMessageStr(data) : getCurrentData(data);
       })
       .catch((err) => {
         console.log('Ошибка получения данных' + err);
@@ -39,7 +42,7 @@ function Movies({ handleOnClickLike, getInitialData, loggedIn, arrForLikeCard })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [searchWord, durationToggle, getInitialData]);
+  }, [searchWord, durationToggle, getInitialData, loggedIn]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -64,12 +67,12 @@ function Movies({ handleOnClickLike, getInitialData, loggedIn, arrForLikeCard })
     <main>
       <MoviesPage
         isLoading={isLoading}
-        moviesCardArr={moviesCardArr||[]}
+        moviesCardArr={moviesCardArr || []}
         handleOnClickLike={handleOnClickLike}
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
         messageStr={messageStr}
-        arrForLikeCard={arrForLikeCard}
+        arrForLikeCards={arrForLikeCards}
       />
     </main>
   );

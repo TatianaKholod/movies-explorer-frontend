@@ -4,7 +4,12 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 import './Profile.css';
 
-function Profile({ handleSignOut, handleSubmitEditProfile, errMessage, loggedIn }) {
+function Profile({
+  handleSignOut,
+  handleSubmitEditProfile,
+  errMessage,
+  loggedIn,
+}) {
   const currentUser = useContext(CurrentUserContext);
   //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
@@ -17,7 +22,7 @@ function Profile({ handleSignOut, handleSubmitEditProfile, errMessage, loggedIn 
 
   useEffect(() => {
     resetForm();
-  }, [loggedIn,resetForm]);
+  }, [loggedIn, resetForm]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -31,7 +36,7 @@ function Profile({ handleSignOut, handleSubmitEditProfile, errMessage, loggedIn 
     setIsEditableForm(true);
   };
 
-  const handleOnClickBtn =(e) =>{
+  const handleOnClickBtn = (e) => {
     //защитимся от многократных нажатий
     e.target.disabled = true;
 
@@ -39,13 +44,9 @@ function Profile({ handleSignOut, handleSubmitEditProfile, errMessage, loggedIn 
       name: values.name || currentUser.name,
       email: values.email || currentUser.email,
     }).then(() => setIsEditableForm(false));
-  }
+  };
   return (
-    <form
-      className='profile'
-      name='profile'
-      autoComplete='off'
-    >
+    <form className='profile' name='profile' autoComplete='off'>
       <h2 className='profile__title'>Привет, {currentUser.name}!</h2>
       <div className='profile__container'>
         <label className='profile__label' htmlFor='name'>

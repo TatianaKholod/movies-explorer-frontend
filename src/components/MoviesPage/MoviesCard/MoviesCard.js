@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './MoviesCard.css';
 
-function MoviesCard({ card, handleOnClickLike, arrForLikeCard }) {
+function MoviesCard({ card, handleOnClickLike, arrForLikeCards }) {
   const location = useLocation();
   const imgUrl = card.image.url
     ? `https://api.nomoreparties.co${card.image.url}`
@@ -13,8 +13,8 @@ function MoviesCard({ card, handleOnClickLike, arrForLikeCard }) {
   const [stateLikeCard, setStateLikeCard] = useState(false);
 
   useEffect(() => {
-    setStateLikeCard(arrForLikeCard.some((item) => item.movieId === card.id));
-  }, [arrForLikeCard, card]);
+    setStateLikeCard(arrForLikeCards.some((item) => item.movieId === card.id));
+  }, [arrForLikeCards, card]);
 
   const handleOnClickCard = (e) => {
     if (e.target.type === 'button') return;
@@ -29,7 +29,7 @@ function MoviesCard({ card, handleOnClickLike, arrForLikeCard }) {
           e.target.disabled = false;
         })
       : handleOnClickLike(
-          arrForLikeCard.find((item) => item.movieId === card.id)._id
+          arrForLikeCards.find((item) => item.movieId === card.id)._id
         ).then(() => {
           e.target.disabled = false;
         });

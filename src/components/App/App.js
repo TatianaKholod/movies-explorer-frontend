@@ -31,17 +31,13 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState({});
 
-  useEffect(() => {
-    checkToken();
-  }, []);
-
   const checkToken = () => {
-    authApi
+    return authApi
       .getToken()
       .then((data) => {
         if (data) {
-          setLoggedIn(true);
           //установим тек. пользователя при входе
+          setLoggedIn(true);
           setCurrentUser(data);
         } else {
           setLoggedIn(false);
@@ -106,7 +102,9 @@ function App() {
     return moviesApi
       .deleteSavedMovie(idCard)
       .then(() => {
-        setSavedMoviesAllCardArr(savedMoviesAllCardArr.filter((item) => item._id !== idCard));
+        setSavedMoviesAllCardArr(
+          savedMoviesAllCardArr.filter((item) => item._id !== idCard)
+        );
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
@@ -130,9 +128,9 @@ function App() {
     return moviesApi
       .addSavedMovie(savedMovie)
       .then((data) => {
-        savedMoviesAllCardArr ?
-        setSavedMoviesAllCardArr([data, ...savedMoviesAllCardArr])
-        :setSavedMoviesAllCardArr([data]); //если данные из localStorage, то просто добавим, а при монитровании загрузится весь ??? TODO
+        savedMoviesAllCardArr
+          ? setSavedMoviesAllCardArr([data, ...savedMoviesAllCardArr])
+          : setSavedMoviesAllCardArr([data]); //если данные из localStorage, то просто добавим, а при монитровании загрузится весь ??? TODO
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
@@ -149,6 +147,7 @@ function App() {
   };
   // данные забираем здесь, чтобы при смене роутов не запрашивать еще раз
   const getInitialData = () => {
+    if (!loggedIn) return;
     if (!moviesAllCardsArr) {
       return getInitialSaveData()
         .then(() =>
@@ -184,6 +183,16 @@ function App() {
           'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
       );
   };
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    getInitialSaveData();
+  }, [loggedIn]);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className={`App ${location.pathname === '/' ? 'App_gray' : ''}`}>
@@ -218,7 +227,7 @@ function App() {
                     handleOnClickLike={handleOnClickLike}
                     getInitialData={getInitialData}
                     loggedIn={loggedIn}
-                    arrForLikeCard={getInitialSaveData()}
+                    arrForLikeCards={savedMoviesAllCardArr}
                   />
                 }
               />
@@ -234,7 +243,7 @@ function App() {
                     handleOnClickDel={handleOnClickDel}
                     loggedIn={loggedIn}
                     getInitialSaveData={getInitialSaveData}
-                    arrForLikeCard={[]}
+                    arrForLikeCards={[]}
                   />
                 }
               />

@@ -1,7 +1,6 @@
 import AuthForm from '../AuthForm/AuthForm';
 
-function Register({ handleSubmitRegister, errMessage}) {
-  
+function Register({ handleSubmitRegister, errMessage }) {
   function onRegister(values) {
     handleSubmitRegister(
       values['name-input'],

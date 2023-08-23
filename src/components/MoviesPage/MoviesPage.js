@@ -9,7 +9,7 @@ function MoviesPage({
   handleClicSearchBtn,
   messageStr,
   handleClicCheckDuration,
-  arrForLikeCard
+  arrForLikeCards,
 }) {
   return (
     <>
@@ -22,7 +22,7 @@ function MoviesPage({
         moviesCardArr={moviesCardArr || []}
         handleOnClickLike={handleOnClickLike}
         messageStr={messageStr}
-        arrForLikeCard={arrForLikeCard}
+        arrForLikeCards={arrForLikeCards}
       />
     </>
   );

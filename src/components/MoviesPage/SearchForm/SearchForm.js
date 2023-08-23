@@ -9,13 +9,13 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
   const [durationToggle, setDurationToggle] = useState(false);
   const [searhPlaceholder, setSearhPlaceholder] = useState('Фильм');
 
-  const handleChangeKeyWord = (e) =>{
+  const handleChangeKeyWord = (e) => {
     setKeyWord(e.target.value);
-  }
+  };
   const handleClicSearchBtnForm = (e) => {
     e.preventDefault();
-    (!keyWord)&&(location.pathname === '/movies')
-      ? (setSearhPlaceholder('Нужно ввести ключевое слово'))
+    !keyWord && location.pathname === '/movies'
+      ? setSearhPlaceholder('Нужно ввести ключевое слово')
       : handleClicSearchBtn(keyWord, durationToggle);
   };
   const handleClicCheckDurationForm = (e) => {
@@ -26,7 +26,8 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
   useEffect(() => {
     // если есть данные в localStorage покажем их только на странице фильмов
     if (location.pathname !== '/movies') return;
-    const check = (localStorage.getItem('durationToggle')==='true')? true: false;
+    const check =
+      localStorage.getItem('durationToggle') === 'true' ? true : false;
     setKeyWord(localStorage.getItem('searchWord'));
     setDurationToggle(check);
   }, [location.pathname]);
@@ -40,7 +41,7 @@ function SearchForm({ handleClicSearchBtn, handleClicCheckDuration }) {
             className='search-form__search-input'
             type='search'
             placeholder={searhPlaceholder}
-            value={keyWord||''}
+            value={keyWord || ''}
             onChange={handleChangeKeyWord}
           ></input>
           <button
