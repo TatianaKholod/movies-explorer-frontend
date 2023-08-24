@@ -22,7 +22,7 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   //для всех фильмов
-  const [moviesAllCardsArr, setmoviesAllCardsArr] = useState(0);
+  const [moviesAllCardsArr, setmoviesAllCardsArr] = useState(null);
   //для сохраненных фильмов
   const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
 
@@ -188,7 +188,7 @@ function App() {
 
   useEffect(() => {
     checkToken();
-  }, []);
+  }, [currentUser]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
