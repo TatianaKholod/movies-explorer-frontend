@@ -26,7 +26,7 @@ function App() {
   //для сохраненных фильмов
   const [savedMoviesAllCardArr, setSavedMoviesAllCardArr] = useState(null);
 
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   const [currentUser, setCurrentUser] = useState({});
 
@@ -44,6 +44,7 @@ function App() {
       })
       .catch((err) => {
         console.log('Ошибка ' + err);
+        setLoggedIn(false);
       });
   };
 
@@ -126,7 +127,7 @@ function App() {
       .then((data) => {
         savedMoviesAllCardArr
           ? setSavedMoviesAllCardArr([data, ...savedMoviesAllCardArr])
-          : setSavedMoviesAllCardArr([data]); //если данные из localStorage, то просто добавим, а при монитровании загрузится весь ??? TODO
+          : setSavedMoviesAllCardArr([data]);// исправь TODO
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
@@ -221,7 +222,7 @@ function App() {
                     handleOnClickLike={handleOnClickLike}
                     getInitialData={getInitialData}
                     loggedIn={loggedIn}
-                    arrForLikeCards={savedMoviesAllCardArr}
+                    arrForLikeCards={savedMoviesAllCardArr||[]}
                   />
                 }
               />

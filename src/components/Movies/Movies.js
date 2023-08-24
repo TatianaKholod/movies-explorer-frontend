@@ -9,7 +9,7 @@ function Movies({
   arrForLikeCards,
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [moviesCardArr, setMoviesCardArr] = useState(null);
+  const [moviesCardArr, setMoviesCardArr] = useState([]);
   const [searchWord, setSearchWord] = useState('');
   const [durationToggle, setDurationToggle] = useState(false);
   const [messageStr, setMessageStr] = useState('');
@@ -47,7 +47,6 @@ function Movies({
   useEffect(() => {
     if (!loggedIn) return;
     // если есть данные в localStorage - покажем их
-    // нужно еще массив сохраненных фильмов получить, иначе лайки не проставить??? TODO
     const savedData = JSON.parse(localStorage.getItem('moviesCardArr'));
     if (!savedData) return;
     setMoviesCardArr(savedData);
@@ -67,7 +66,7 @@ function Movies({
     <main>
       <MoviesPage
         isLoading={isLoading}
-        moviesCardArr={moviesCardArr || []}
+        moviesCardArr={moviesCardArr}
         handleOnClickLike={handleOnClickLike}
         handleClicSearchBtn={handleClicSearchBtn}
         handleClicCheckDuration={handleClicCheckDuration}
