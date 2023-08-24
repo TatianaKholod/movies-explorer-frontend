@@ -183,8 +183,9 @@ function App() {
 
   useEffect(() => {
     if (!loggedIn) return;
+    setSavedMoviesAllCardArr(null);
     getInitialSaveData();
-  }, [loggedIn,currentUser]);
+  }, [loggedIn, currentUser]);
 
   useEffect(() => {
     checkToken();
