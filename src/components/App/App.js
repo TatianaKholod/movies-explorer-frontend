@@ -184,11 +184,11 @@ function App() {
   useEffect(() => {
     if (!loggedIn) return;
     getInitialSaveData();
-  }, [loggedIn]);
+  }, [loggedIn,currentUser]);
 
   useEffect(() => {
     checkToken();
-  }, [currentUser]);
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
