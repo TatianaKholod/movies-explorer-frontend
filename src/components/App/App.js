@@ -92,7 +92,7 @@ function App() {
         return data;
       })
       .catch((err) => {
-        return'При обновлении профиля произошла ошибка ' + err;
+        return 'При обновлении профиля произошла ошибка ' + err;
       });
   };
   const doDelLike = (idCard) => {
@@ -127,7 +127,7 @@ function App() {
       .then((data) => {
         savedMoviesAllCardArr
           ? setSavedMoviesAllCardArr([data, ...savedMoviesAllCardArr])
-          : setSavedMoviesAllCardArr([data]);// исправь TODO
+          : setSavedMoviesAllCardArr([data]); // исправь TODO
       })
       .catch((err) => {
         console.log('Ошибка сохранения фильма' + err);
@@ -185,7 +185,7 @@ function App() {
     if (!loggedIn) return;
     setSavedMoviesAllCardArr(null);
     getInitialSaveData();
-  }, [loggedIn, currentUser]);
+  }, [loggedIn]);
 
   useEffect(() => {
     checkToken();
@@ -199,16 +199,18 @@ function App() {
           <Route
             path='/signin'
             element={
-              <Login
-                handleSubmitLogin={handleSubmitLogin}
+              <ProtectedRoute
+                loggedIn={!loggedIn}
+                element={<Login handleSubmitLogin={handleSubmitLogin} />}
               />
             }
           />
           <Route
             path='/signup'
             element={
-              <Register
-                handleSubmitRegister={handleSubmitRegister}
+              <ProtectedRoute
+                loggedIn={!loggedIn}
+                element={<Register handleSubmitRegister={handleSubmitRegister} />}
               />
             }
           />
@@ -223,7 +225,7 @@ function App() {
                     handleOnClickLike={handleOnClickLike}
                     getInitialData={getInitialData}
                     loggedIn={loggedIn}
-                    arrForLikeCards={savedMoviesAllCardArr||[]}
+                    arrForLikeCards={savedMoviesAllCardArr || []}
                   />
                 }
               />

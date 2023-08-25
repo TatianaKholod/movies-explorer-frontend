@@ -4,14 +4,11 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 import './Profile.css';
 
-function Profile({
-  handleSignOut,
-  handleSubmitEditProfile,
-  loggedIn,
-}) {
+function Profile({ handleSignOut, handleSubmitEditProfile, loggedIn }) {
   const currentUser = useContext(CurrentUserContext);
   //признак для отображения формы сохранения профиля
   const [isEditableForm, setIsEditableForm] = useState(false);
+  const [nameBtnEdit, setNameBtnEdit] = useState('Редактировать');
   const [errMessage, setErrMessage] = useState('');
 
   const { values, handleChange, errors, isValid, resetForm } =
@@ -23,11 +20,18 @@ function Profile({
   useEffect(() => {
     if (!loggedIn) return;
     resetForm();
-    setErrMessage('')
+    setErrMessage('');
+    setNameBtnEdit('Редактировать');
   }, [loggedIn, resetForm]);
 
   const editForm = () => {
     setIsEditableForm(true);
+  };
+
+  const isNotModified = () => {
+    return (
+      currentUser.name === values.name || currentUser.email === values.email
+    );
   };
 
   const handleOnClickBtn = (e) => {
@@ -41,8 +45,11 @@ function Profile({
       if (typeof data === 'string') {
         setErrMessage(data);
         setIsEditableForm(true);
+      } else {
+        setIsEditableForm(false);
+        setNameBtnEdit('Данные сохранены. Редактировать снова');
       }
-      else setIsEditableForm(false)});
+    });
   };
   return (
     <form className='profile' name='profile' autoComplete='off'>
@@ -91,7 +98,7 @@ function Profile({
             className='profile__submit-btn button'
             type='submit'
             onClick={handleOnClickBtn}
-            disabled={!isValid ? true : false}
+            disabled={!isValid || isNotModified() ? true : false}
           >
             Сохранить
           </button>
@@ -103,7 +110,7 @@ function Profile({
             type='button'
             onClick={editForm}
           >
-            Редактировать
+            {nameBtnEdit}
           </button>
           <Link
             className='profile__exit-link link link_color_red'

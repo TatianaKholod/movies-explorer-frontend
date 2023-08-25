@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import MoviesPage from '../MoviesPage/MoviesPage';
 import doFilterData from '../../utils/Searh';
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 function SavedMovies({
   loggedIn,
