@@ -42,7 +42,7 @@ function Movies({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [searchWord, durationToggle, getInitialData, loggedIn]);
+  }, [searchWord, durationToggle, loggedIn]);
 
   useEffect(() => {
     if (!loggedIn) return;

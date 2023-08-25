@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../../images/logo.svg';
+import Preloader from '../MoviesPage/Preloader/Preloader';
 import './AuthForm.css';
 
 function AuthForm({
@@ -12,13 +13,15 @@ function AuthForm({
   textLink,
   handleSubmit,
 }) {
-  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation({
-    'name-input': '',
-    'email-input': '',
-    'password-input': '',
-  });
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormWithValidation({
+      'name-input': '',
+      'email-input': '',
+      'password-input': '',
+    });
 
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     resetForm();
@@ -26,10 +29,13 @@ function AuthForm({
 
   function onSubmit(e) {
     e.preventDefault();
-    handleSubmit(values);
+    setIsLoading(true);
+    handleSubmit(values).then(() => setIsLoading(false));
   }
+
   return (
-    <form
+   <>{ (isLoading) ? (<Preloader />) : (
+   <form
       name='register'
       className='auth-form'
       onSubmit={onSubmit}
@@ -48,7 +54,7 @@ function AuthForm({
               name='name-input'
               id='name-input'
               type='text'
-              value={values['name-input']||''}
+              value={values['name-input'] || ''}
               onChange={handleChange}
               className='auth-form__input'
               autoComplete='on'
@@ -57,7 +63,9 @@ function AuthForm({
               maxLength='200'
               pattern='^[A-zЁёА-я\-\s]+$'
             />
-            <span className='auth-form__input-error name-input-error'>{errors['name-input']}</span>
+            <span className='auth-form__input-error name-input-error'>
+              {errors['name-input']}
+            </span>
           </label>
         )}
         <label className='auth-form__label' htmlFor='email-input'>
@@ -66,7 +74,7 @@ function AuthForm({
             name='email-input'
             id='email-input'
             type='email'
-            value={values['email-input']||''}
+            value={values['email-input'] || ''}
             onChange={handleChange}
             className='auth-form__input'
             autoComplete='on'
@@ -74,7 +82,9 @@ function AuthForm({
             minLength='2'
             maxLength='200'
           />
-          <span className='auth-form__input-error email-input-error'>{errors['email-input']}</span>
+          <span className='auth-form__input-error email-input-error'>
+            {errors['email-input']}
+          </span>
         </label>
 
         <label className='auth-form__label' htmlFor='password-input'>
@@ -83,7 +93,7 @@ function AuthForm({
             name='password-input'
             id='password-input'
             type='password'
-            value={values['password-input']||''}
+            value={values['password-input'] || ''}
             onChange={handleChange}
             className='auth-form__input'
             autoComplete='off'
@@ -92,13 +102,13 @@ function AuthForm({
             maxLength='40'
           />
           <span className='auth-form__input-error password-input-error'>
-          {errors['password-input']}
+            {errors['password-input']}
           </span>
         </label>
       </div>
 
       <span className='auth-form__input-error button-input-error'>
-          {errMessage}
+        {errMessage}
       </span>
       <button
         name='register-button'
@@ -118,7 +128,7 @@ function AuthForm({
           {textLink}
         </Link>
       </span>
-    </form>
+    </form>) } </>
   );
 }
 

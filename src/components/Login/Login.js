@@ -4,7 +4,7 @@ import AuthForm from '../AuthForm/AuthForm';
 function Login({ handleSubmitLogin }) {
   const [errMessage, setErrMessage] = useState('');
   const onLogin = (values) => {
-    handleSubmitLogin(values['email-input'], values['password-input']).then(
+    return handleSubmitLogin(values['email-input'], values['password-input']).then(
       (data) => {
         if (typeof data === 'string') setErrMessage(data);
       }

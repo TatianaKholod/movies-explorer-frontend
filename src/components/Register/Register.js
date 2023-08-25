@@ -4,7 +4,7 @@ import AuthForm from '../AuthForm/AuthForm';
 function Register({ handleSubmitRegister }) {
   const [errMessage, setErrMessage] = useState('');
   const onRegister = (values) =>{
-    handleSubmitRegister(
+    return handleSubmitRegister(
       values['name-input'],
       values['email-input'],
       values['password-input']

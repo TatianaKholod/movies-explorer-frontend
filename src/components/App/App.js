@@ -210,7 +210,9 @@ function App() {
             element={
               <ProtectedRoute
                 loggedIn={!loggedIn}
-                element={<Register handleSubmitRegister={handleSubmitRegister} />}
+                element={
+                  <Register handleSubmitRegister={handleSubmitRegister} />
+                }
               />
             }
           />

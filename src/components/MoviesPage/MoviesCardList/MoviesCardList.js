@@ -1,7 +1,13 @@
 import { createRef, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
+
+const L_ROW_CARD_COUNT = 4;
+const S_ROW_CARD_COUNT = 5;
+const ACC_L_ROW_CARD_COUNT = 1;
+const ACC_S_ROW_CARD_COUNT = 2;
 
 function MoviesCardList({
   moviesCardArr,
@@ -11,72 +17,40 @@ function MoviesCardList({
   arrForLikeCards,
 }) {
   const refGrid = createRef();
-
-  // подсчет реально отображенных в контейнере карточек без скрытых
-  const getCountDisplayedCards = (gridElem) => {
-    if (!gridElem) return 0;
-    const maxTop =
-      gridElem.parentElement.offsetTop + gridElem.parentElement.offsetHeight;
-    return Array.from(gridElem.children).reduce(
-      (s, i) => (i.offsetTop < maxTop ? (s = s + 1) : s),
-      0
-    );
-  };
-
+  const location = useLocation();
   //  Для хранения реально отображенных карточек
   const [countDisplayedCards, setCountDisplayedCards] = useState(0);
+  // для хранения текущего количества приращений
+  const [accRows, setAccRows] = useState(0);
+
+  const getCountColumnsGrid = () => {
+    const stylesGrid = window.getComputedStyle(refGrid.current);
+    return (
+      stylesGrid.getPropertyValue('grid-template-columns').match(/px/g) || []
+    ).length;
+  };
+
+  // подсчет карточек для отображения
+  const getCountDisplayedCards = (gridElem) => {
+    if (location.pathname === '/saved-movies') return moviesCardArr.length;
+    if (!gridElem) return 0;
+    const countColumnsGrid = getCountColumnsGrid();
+    return countColumnsGrid > 1
+      ? L_ROW_CARD_COUNT * countColumnsGrid +
+          accRows * countColumnsGrid * ACC_L_ROW_CARD_COUNT
+      : S_ROW_CARD_COUNT + accRows * ACC_S_ROW_CARD_COUNT;
+  };
 
   useEffect(() => {
     setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
 
-  // Для определения кол-ва колонок и высоты элементов грида
-  const determinePropertiesGrid = () => {
-    // получаем все стили элемента
-    const stylesGrid = window.getComputedStyle(refGrid.current);
-    const columns = stylesGrid.getPropertyValue('grid-template-columns');
-    const rows = stylesGrid.getPropertyValue('grid-template-rows');
-    const gap = stylesGrid.getPropertyValue('row-gap');
-    // уберем px из полученных значений свойств
-    const heightCard =
-      +rows.slice(0, rows.indexOf('px')) + +gap.slice(0, gap.indexOf('px'));
-    return { countColumns: (columns.match(/px/g) || []).length, heightCard };
-  };
-
-  // Для определения высоты контейнера
-  const determineHeightConteiner = (countColumns, heightCard, countCards) => {
-    // 70 это padding По хорошему нужно брать из свойств TODO
-    return +Math.ceil(countCards / countColumns) * heightCard + +70 + 'px';
-  };
-
-  const updateHeightContainer = () => {
-    const { countColumns, heightCard } = determinePropertiesGrid();
-    setTimeout(
-      refGrid.current.parentElement.style.setProperty(
-        'max-height',
-        determineHeightConteiner(countColumns, heightCard, countDisplayedCards)
-      ),
-      500
-    );
-  };
-
-  // Для изменения размеров контейнера при resize
   useEffect(() => {
-    window.addEventListener('resize', updateHeightContainer);
-    return () => window.removeEventListener('resize', updateHeightContainer);
-  });
+    setAccRows(0);
+  }, [moviesCardArr]);
 
-  // Обработчик нажатия кнопки Еще
   const handleOnClikMore = () => {
-    const { countColumns, heightCard } = determinePropertiesGrid();
-    const newCountCards =
-      +(countColumns > 1 ? countColumns : 2) + countDisplayedCards;
-    // приращение в гриде в одну колонку = 2
-    refGrid.current.parentElement.style.setProperty(
-      'max-height',
-      determineHeightConteiner(countColumns, heightCard, newCountCards)
-    );
-    setCountDisplayedCards(newCountCards);
+    setAccRows(accRows + 1);
   };
 
   return (
@@ -93,9 +67,9 @@ function MoviesCardList({
                 className='card-list__list movies-common-section'
                 ref={refGrid}
               >
-                {moviesCardArr.map((card, key) => (
+                {moviesCardArr.slice(0, countDisplayedCards).map((card) => (
                   <MoviesCard
-                    key={key}
+                    key={card.id ? card.id : card._id}
                     card={card}
                     handleOnClickLike={handleOnClickLike}
                     arrForLikeCards={arrForLikeCards}
