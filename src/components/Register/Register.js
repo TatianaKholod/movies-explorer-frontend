@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import AuthForm from '../AuthForm/AuthForm';
 
 function Register({ handleSubmitRegister }) {
-  function onRegister(values) {
-    handleSubmitRegister(
+  const [errMessage, setErrMessage] = useState('');
+  const onRegister = (values) =>{
+    return handleSubmitRegister(
       values['name-input'],
       values['email-input'],
       values['password-input']
-    );
+    ).then((data) => {
+      if (typeof data === 'string') 
+        setErrMessage(data);
+    });
   }
 
   return (
@@ -16,6 +21,7 @@ function Register({ handleSubmitRegister }) {
       textLinkBefore='Уже зарегистрированы?'
       textLink='Войти'
       handleSubmit={onRegister}
+      errMessage={errMessage}
     />
   );
 }

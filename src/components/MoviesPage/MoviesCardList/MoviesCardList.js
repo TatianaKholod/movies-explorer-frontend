@@ -1,37 +1,56 @@
 import { createRef, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
 
-function MoviesCardList({ moviesCardArr, isLoading }) {
-  const refGrid = createRef();
+const L_ROW_CARD_COUNT = 4;
+const S_ROW_CARD_COUNT = 5;
+const ACC_L_ROW_CARD_COUNT = 1;
+const ACC_S_ROW_CARD_COUNT = 2;
 
-  // подсчет реально отображенных в контейнере карточек без скрытых
-  const getCountDisplayedCards = (gridElem) => {
-    if (!gridElem) return 0;
-    // так можно получить количество строк и столбцов грида
-    /*const styles = window.getComputedStyle(gridElem); // получаем все стили элемента
-    const width = styles.getPropertyValue('grid-template-rows');
-    console.log(width);*/
-    // так можно установить высоту 
-    //gridElem.parentElement.style.setProperty('max-height', '300px');
-    const maxTop =
-      gridElem.parentElement.offsetTop + gridElem.parentElement.offsetHeight;
-    return Array.from(gridElem.children).reduce(
-      (s, i) => (i.offsetTop < maxTop ? (s = s + 1) : s),
-      0
-    );
+function MoviesCardList({
+  moviesCardArr,
+  isLoading,
+  handleOnClickLike,
+  messageStr,
+  arrForLikeCards,
+}) {
+  const refGrid = createRef();
+  const location = useLocation();
+  //  Для хранения реально отображенных карточек
+  const [countDisplayedCards, setCountDisplayedCards] = useState(0);
+  // для хранения текущего количества приращений
+  const [accRows, setAccRows] = useState(0);
+
+  const getCountColumnsGrid = () => {
+    const stylesGrid = window.getComputedStyle(refGrid.current);
+    return (
+      stylesGrid.getPropertyValue('grid-template-columns').match(/px/g) || []
+    ).length;
   };
 
-  //  Для определения количества реально отображенных карточек
-  const [countDisplayedCards, setCountDisplayedCards] = useState(0);
-    
-   useEffect(() => {
-     setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
+  // подсчет карточек для отображения
+  const getCountDisplayedCards = (gridElem) => {
+    if (location.pathname === '/saved-movies') return moviesCardArr.length;
+    if (!gridElem) return 0;
+    const countColumnsGrid = getCountColumnsGrid();
+    return countColumnsGrid > 1
+      ? L_ROW_CARD_COUNT * countColumnsGrid +
+          accRows * countColumnsGrid * ACC_L_ROW_CARD_COUNT
+      : S_ROW_CARD_COUNT + accRows * ACC_S_ROW_CARD_COUNT;
+  };
+
+  useEffect(() => {
+    setCountDisplayedCards(getCountDisplayedCards(refGrid.current));
   }, [refGrid]);
 
-  const handleOnClikMore = () => {
+  useEffect(() => {
+    setAccRows(0);
+  }, [moviesCardArr]);
 
+  const handleOnClikMore = () => {
+    setAccRows(accRows + 1);
   };
 
   return (
@@ -41,16 +60,29 @@ function MoviesCardList({ moviesCardArr, isLoading }) {
       ) : (
         <>
           <div className='card-list__container'>
-            <ul className='card-list__list movies-common-section' ref={refGrid}>
-              {moviesCardArr.map((card, key) => (
-                <MoviesCard key={key} card={card} />
-              ))}
-            </ul>
+            {messageStr ? (
+              <p className='card-list__message'>{messageStr}</p>
+            ) : (
+              <ul
+                className='card-list__list movies-common-section'
+                ref={refGrid}
+              >
+                {moviesCardArr.slice(0, countDisplayedCards).map((card) => (
+                  <MoviesCard
+                    key={card.id ? card.id : card._id}
+                    card={card}
+                    handleOnClickLike={handleOnClickLike}
+                    arrForLikeCards={arrForLikeCards}
+                  />
+                ))}
+              </ul>
+            )}
           </div>
           <div className='card-list__button-container'>
             <button
               className={`card-list__button link ${
-                countDisplayedCards < moviesCardArr.length
+                countDisplayedCards < moviesCardArr.length &&
+                countDisplayedCards !== 0
                   ? 'card-list__button_on'
                   : ''
               }`}
